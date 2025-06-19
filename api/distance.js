@@ -1,17 +1,13 @@
-// api/distance.js
+const fetch = require('node-fetch');
 
-export default async function handler(req, res) {
-  const origin = '2040 Budaörs, Szivárvány utca 3';
+module.exports = async (req, res) => {
   const destination = req.query.destination;
-
-  const apiKey = process.env.GOOGLE_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'Google API kulcs hiányzik.' });
-  }
-
   if (!destination) {
-    return res.status(400).json({ error: 'Célállomás nem megadott.' });
+    return res.status(400).json({ error: "Hiányzó paraméter: destination" });
   }
+
+  const origin = "2040 Budaörs, Szivárvány utca 3";
+  const apiKey = process.env.GOOGLE_API_KEY;
 
   const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origin)}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
 
@@ -19,24 +15,18 @@ export default async function handler(req, res) {
     const response = await fetch(url);
     const data = await response.json();
 
-    if (data.status !== 'OK') {
-      console.error('Google API válasz hiba:', data);
-      return res.status(500).json({ error: 'A Google API nem adott érvényes választ.', details: data });
-    }
+    const distanceMeters = data.rows?.[0]?.elements?.[0]?.distance?.value;
+    if (!distanceMeters) throw new Error("Nincs elérhető távolságadat");
 
-    const elements = data.rows?.[0]?.elements?.[0];
-    if (!elements || elements.status !== 'OK') {
-      console.error('Távolságadat nem érkezett:', elements);
-      return res.status(500).json({ error: 'Távolságadat nem érkezett.' });
-    }
-
-    const distanceMeters = elements.distance.value;
     const distanceKm = distanceMeters / 1000;
-    const roundedKm = Math.round(distanceKm * 2); // oda-vissza
-    res.status(200).json({ distanceKm: roundedKm });
+    const price = Math.round(distanceKm * 2 * 150 / 1000) * 1000;
 
-  } catch (error) {
-    console.error('Távolság lekérdezés hiba:', error);
-    res.status(500).json({ error: 'Hálózati vagy kiszolgálói hiba történt.', details: error.message });
+    res.status(200).json({
+      distance_km: Math.round(distanceKm),
+      price_huf: price
+    });
+  } catch (err) {
+    console.error("Hiba a Distance Matrix API-nál:", err);
+    res.status(500).json({ error: "Hiba történt a távolság lekérdezésekor." });
   }
-}
+};

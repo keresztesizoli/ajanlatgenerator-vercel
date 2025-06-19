@@ -1,49 +1,45 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ajánlat Generátor</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-  <script
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"
-    async
-    defer
-  ></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Ajánlatgenerátor</title>
+    <link rel="stylesheet" href="style.css"/>
+    <script>
+      window.initAutocomplete = function() {
+        if (typeof autocompleteInit === "function") autocompleteInit();
+      };
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places&callback=initAutocomplete" async defer></script>
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="Logó" class="logo" />
-    <h1>Ajánlatkérő űrlap</h1>
-    <form id="ajanlatForm">
-      <label for="menyasszony">Menyasszony neve:</label>
-      <input type="text" id="menyasszony" name="menyasszony" required />
+    <div class="container">
+        <h1>Ajánlat Generátor</h1>
+        <form id="offerForm">
+            <label for="bride">Menyasszony neve:</label>
+            <input type="text" id="bride" name="bride" required/>
 
-      <label for="volegeny">Vőlegény neve:</label>
-      <input type="text" id="volegeny" name="volegeny" required />
+            <label for="groom">Vőlegény neve:</label>
+            <input type="text" id="groom" name="groom" required/>
 
-      <label for="datum">Esküvő dátuma:</label>
-      <input type="date" id="datum" name="datum" required />
+            <label for="date">Esküvő dátuma:</label>
+            <input type="date" id="date" name="date" required/>
 
-      <label for="szertartas">Szertartás kezdete:</label>
-      <input type="time" id="szertartas" name="szertartas" required />
+            <label for="time">Szertartás kezdete:</label>
+            <input type="time" id="time" name="time" required/>
 
-      <label for="letszam">Létszám (kb):</label>
-      <input type="number" id="letszam" name="letszam" required />
+            <label for="guests">Létszám:</label>
+            <input type="number" id="guests" name="guests" required/>
 
-      <label for="helyszin">Helyszín:</label>
-      <input type="text" id="helyszin" name="helyszin" required />
+            <label for="location">Helyszín:</label>
+            <input type="text" id="location" name="location" required/>
 
-      <label for="szorzo">Km-díj szorzó (alapértelmezett: 150):</label>
-      <input type="number" id="szorzo" name="szorzo" value="150" />
+            <label for="distancePrice">Km-díj (automatikus):</label>
+            <input type="text" id="distancePrice" name="distancePrice" readonly/>
 
-      <label for="dij">Számított km-díj (Ft):</label>
-      <input type="text" id="dij" name="dij" readonly />
-
-      <button type="button" id="generatePDF">Ajánlat generálása (PDF)</button>
-    </form>
-  </div>
-  <script src="main.js"></script>
+            <button type="submit">PDF generálása</button>
+        </form>
+    </div>
+    <script src="main.js"></script>
 </body>
 </html>
