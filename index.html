@@ -2,23 +2,48 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ajánlat Generátor</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="main.js" defer></script>
-  <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"
+    async
+    defer
+  ></script>
 </head>
 <body>
   <div class="container">
-    <h1>Ajánlat Generátor</h1>
-    <form id="offer-form">
-      <label for="destination">Helyszín:</label>
-      <input id="destination" type="text" placeholder="Keresés..." required />
-      <label for="price">Számított km-díj (Ft):</label>
-      <input id="price" type="text" readonly />
-      <button type="button" onclick="generatePDF()">PDF mentése</button>
+    <img src="logo.png" alt="Logó" class="logo" />
+    <h1>Ajánlatkérő űrlap</h1>
+    <form id="ajanlatForm">
+      <label for="menyasszony">Menyasszony neve:</label>
+      <input type="text" id="menyasszony" name="menyasszony" required />
+
+      <label for="volegeny">Vőlegény neve:</label>
+      <input type="text" id="volegeny" name="volegeny" required />
+
+      <label for="datum">Esküvő dátuma:</label>
+      <input type="date" id="datum" name="datum" required />
+
+      <label for="szertartas">Szertartás kezdete:</label>
+      <input type="time" id="szertartas" name="szertartas" required />
+
+      <label for="letszam">Létszám (kb):</label>
+      <input type="number" id="letszam" name="letszam" required />
+
+      <label for="helyszin">Helyszín:</label>
+      <input type="text" id="helyszin" name="helyszin" required />
+
+      <label for="szorzo">Km-díj szorzó (alapértelmezett: 150):</label>
+      <input type="number" id="szorzo" name="szorzo" value="150" />
+
+      <label for="dij">Számított km-díj (Ft):</label>
+      <input type="text" id="dij" name="dij" readonly />
+
+      <button type="button" id="generatePDF">Ajánlat generálása (PDF)</button>
     </form>
   </div>
+  <script src="main.js"></script>
 </body>
 </html>
