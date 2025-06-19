@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ajánlat Generátor</title>
+  <link rel="stylesheet" href="style.css" />
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"></script>
+</head>
+<body>
+  <div class="container">
+    <img src="logo.png" alt="Logó" class="logo" />
+    <h1>Ajánlat Generátor</h1>
+    <form id="offerForm">
+      <label>Menyasszony neve: <input type="text" id="brideName" required /></label>
+      <label>Vőlegény neve: <input type="text" id="groomName" required /></label>
+      <label>Esküvő dátuma: <input type="date" id="weddingDate" required /></label>
+      <label>Szertartás kezdete: <input type="time" id="ceremonyTime" required /></label>
+      <label>Létszám (kb): <input type="number" id="guestCount" required /></label>
+      <label>Km-díj szorzó: <input type="number" id="kmMultiplier" value="150" /></label>
+      <label>Helyszín: <input type="text" id="locationInput" placeholder="Add meg az esküvő helyszínét" /></label>
+      <p id="kmResult">Számított km-díj: <span id="calculatedFee">0</span> Ft</p>
+      <button type="button" onclick="generatePDF()">Ajánlat generálása</button>
+    </form>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
