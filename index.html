@@ -1,45 +1,41 @@
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Ajánlatgenerátor</title>
-    <link rel="stylesheet" href="style.css"/>
-    <script>
-      window.initAutocomplete = function() {
-        if (typeof autocompleteInit === "function") autocompleteInit();
-      };
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=__GOOGLE_API_KEY__&libraries=places&callback=initAutocomplete" async defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajánlat Generátor</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Ajánlat Generátor</h1>
-        <form id="offerForm">
-            <label for="bride">Menyasszony neve:</label>
-            <input type="text" id="bride" name="bride" required/>
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1>Esküvői Ajánlat Generátor</h1>
+    <form id="offerForm">
+      <label for="bride">Menyasszony neve:</label>
+      <input type="text" id="bride" name="bride" required />
 
-            <label for="groom">Vőlegény neve:</label>
-            <input type="text" id="groom" name="groom" required/>
+      <label for="groom">Vőlegény neve:</label>
+      <input type="text" id="groom" name="groom" required />
 
-            <label for="date">Esküvő dátuma:</label>
-            <input type="date" id="date" name="date" required/>
+      <label for="date">Esküvő dátuma:</label>
+      <input type="date" id="date" name="date" required />
 
-            <label for="time">Szertartás kezdete:</label>
-            <input type="time" id="time" name="time" required/>
+      <label for="time">Szertartás kezdete:</label>
+      <input type="time" id="time" name="time" required />
 
-            <label for="guests">Létszám:</label>
-            <input type="number" id="guests" name="guests" required/>
+      <label for="guests">Létszám (kb):</label>
+      <input type="number" id="guests" name="guests" required />
 
-            <label for="location">Helyszín:</label>
-            <input type="text" id="location" name="location" required/>
+      <label for="location">Helyszín:</label>
+      <input type="text" id="location" name="location" required />
 
-            <label for="distancePrice">Km-díj (automatikus):</label>
-            <input type="text" id="distancePrice" name="distancePrice" readonly/>
+      <label for="fee">Kiszállási díj (Ft):</label>
+      <input type="text" id="fee" name="fee" readonly />
 
-            <button type="submit">PDF generálása</button>
-        </form>
-    </div>
-    <script src="main.js"></script>
+      <button type="submit">PDF generálása</button>
+    </form>
+  </div>
 </body>
 </html>

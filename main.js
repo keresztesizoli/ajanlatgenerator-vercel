@@ -1,28 +1,26 @@
+
 console.log("Google Maps API init");
 
-let autocomplete;
-
-function autocompleteInit() {
+function initAutocomplete() {
   const input = document.getElementById("location");
   if (!input) return;
-  autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener("place_changed", calculateDistance);
-}
+  const autocomplete = new google.maps.places.Autocomplete(input);
 
-function calculateDistance() {
-  const location = document.getElementById("location").value;
-  if (!location) return;
-
-  fetch(`/api/distance?destination=${encodeURIComponent(location)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (data && data.distance_km && data.price_huf) {
-        document.getElementById("distancePrice").value = `${data.price_huf} Ft (${data.distance_km} km)`;
+  autocomplete.addListener("place_changed", async () => {
+    const place = autocomplete.getPlace();
+    if (!place.formatted_address) return;
+    try {
+      const response = await fetch(`/api/distance?destination=${encodeURIComponent(place.formatted_address)}`);
+      const data = await response.json();
+      if (data && data.distanceKm) {
+        const fee = Math.round(data.distanceKm * 2 * 150 / 1000) * 1000;
+        document.getElementById("fee").value = fee;
       } else {
-        console.error("Érvénytelen válasz:", data);
+        document.getElementById("fee").value = "Nem elérhető";
       }
-    })
-    .catch(err => {
-      console.error("Távolság lekérdezés hiba:", err);
-    });
+    } catch (error) {
+      console.error("Távolság lekérdezés hiba:", error);
+      document.getElementById("fee").value = "Hiba";
+    }
+  });
 }
