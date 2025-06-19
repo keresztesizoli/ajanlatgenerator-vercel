@@ -1,15 +1,33 @@
+function initAutocomplete() {
+  const input = document.getElementById('destination');
+  const autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.addListener('place_changed', () => {
+    const place = autocomplete.getPlace();
+    if (!place.formatted_address) return;
+    calculateDistance(place.formatted_address);
+  });
+}
+window.initAutocomplete = initAutocomplete;
 
-function calculateDistance() {
-    const location = document.getElementById('location').value;
-    const rate = parseFloat(document.getElementById('rate').value);
-    fetch(`/api/distance?destination=${encodeURIComponent(location)}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.distance_km) {
-                const fee = Math.round(data.distance_km * 2 * rate / 1000) * 1000;
-                document.getElementById('distanceFee').value = fee.toLocaleString('hu-HU') + " Ft";
-            } else {
-                document.getElementById('distanceFee').value = "Hiba a számításnál";
-            }
-        });
+async function calculateDistance(destination) {
+  try {
+    const response = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
+    const data = await response.json();
+    if (data.distance && data.distance.value) {
+      const km = data.distance.value / 1000;
+      const price = Math.round((km * 150) / 1000) * 1000;
+      document.getElementById("price").value = price;
+    }
+  } catch (error) {
+    console.error("Távolság lekérdezés hiba:", error);
+  }
+}
+
+function generatePDF() {
+  const doc = new window.jspdf.jsPDF();
+  const destination = document.getElementById("destination").value;
+  const price = document.getElementById("price").value;
+  doc.text(`Helyszín: ${destination}`, 10, 10);
+  doc.text(`Számított km-díj: ${price} Ft`, 10, 20);
+  doc.save("ajanlat.pdf");
 }

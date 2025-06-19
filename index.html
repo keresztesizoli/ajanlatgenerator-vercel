@@ -1,25 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8" />
-    <title>Ajánlat Generátor</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="main.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajánlat Generátor</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"></script>
 </head>
 <body>
+  <div class="container">
     <h1>Ajánlat Generátor</h1>
-    <form id="offerForm">
-        <label>Helyszín:
-            <input id="location" name="location" type="text" placeholder="Pl. Takler Kúria, Szekszárd" />
-        </label>
-        <label>Km-díj szorzó:
-            <input id="rate" name="rate" type="number" value="150" />
-        </label>
-        <label>Számított km-díj (Ft):
-            <input id="distanceFee" name="distanceFee" type="text" readonly />
-        </label>
-        <button type="button" onclick="calculateDistance()">Díj újraszámítása</button>
+    <form id="offer-form">
+      <label for="destination">Helyszín:</label>
+      <input id="destination" type="text" placeholder="Keresés..." required />
+      <label for="price">Számított km-díj (Ft):</label>
+      <input id="price" type="text" readonly />
+      <button type="button" onclick="generatePDF()">PDF mentése</button>
     </form>
+  </div>
 </body>
 </html>
