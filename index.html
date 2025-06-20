@@ -3,39 +3,33 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ajánlat Generátor</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="main.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Esküvői ajánlat generátor</title>
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete" async defer></script>
 </head>
 <body>
   <div class="container">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1>Esküvői Ajánlat Generátor</h1>
+    <img src="logo.png" alt="Logo" class="logo"/>
+    <h1>Esküvői ajánlat generátor</h1>
     <form id="offerForm">
-      <label for="bride">Menyasszony neve:</label>
-      <input type="text" id="bride" name="bride" required />
-
-      <label for="groom">Vőlegény neve:</label>
-      <input type="text" id="groom" name="groom" required />
-
-      <label for="date">Esküvő dátuma:</label>
-      <input type="date" id="date" name="date" required />
-
-      <label for="time">Szertartás kezdete:</label>
-      <input type="time" id="time" name="time" required />
-
-      <label for="guests">Létszám (kb):</label>
-      <input type="number" id="guests" name="guests" required />
-
-      <label for="location">Helyszín:</label>
-      <input type="text" id="location" name="location" required />
-
-      <label for="fee">Kiszállási díj (Ft):</label>
-      <input type="text" id="fee" name="fee" readonly />
-
-      <button type="submit">PDF generálása</button>
+      <label>Menyasszony neve: <input type="text" name="bride" required></label>
+      <label>Vőlegény neve: <input type="text" name="groom" required></label>
+      <label>Esküvő dátuma: <input type="date" name="date" required></label>
+      <label>Szertartás kezdete: <input type="time" name="time" required></label>
+      <label>Létszám (kb): <input type="number" name="guests" required></label>
+      <label>Helyszín: <input id="location" type="text" name="location" required></label>
+      <label>Km-díj szorzó (alapértelmezett: 150): <input type="number" id="multiplier" name="multiplier" value="150"></label>
+      <label>Számított km-díj (Ft): <input type="text" id="fee" name="fee" readonly></label>
+      <fieldset>
+        <legend>Csomagajánlat:</legend>
+        <label><input type="radio" name="package" value="Alap csomag" checked> Alap csomag</label>
+        <label><input type="radio" name="package" value="Prémium csomag"> Prémium csomag</label>
+        <label><input type="radio" name="package" value="Exkluzív csomag"> Exkluzív csomag</label>
+      </fieldset>
+      <button type="submit">Ajánlat PDF generálása</button>
     </form>
   </div>
+  <script src="main.js"></script>
 </body>
 </html>
