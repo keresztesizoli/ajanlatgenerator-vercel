@@ -4,31 +4,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Esküvői ajánlat generátor</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>Ajánlat Generátor</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete" async defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <img src="logo.png" alt="Logo" class="logo"/>
-    <h1>Esküvői ajánlat generátor</h1>
-    <form id="offerForm">
-      <label>Menyasszony neve: <input type="text" name="bride" required></label>
-      <label>Vőlegény neve: <input type="text" name="groom" required></label>
-      <label>Esküvő dátuma: <input type="date" name="date" required></label>
-      <label>Szertartás kezdete: <input type="time" name="time" required></label>
-      <label>Létszám (kb): <input type="number" name="guests" required></label>
-      <label>Helyszín: <input id="location" type="text" name="location" required></label>
-      <label>Km-díj szorzó (alapértelmezett: 150): <input type="number" id="multiplier" name="multiplier" value="150"></label>
-      <label>Számított km-díj (Ft): <input type="text" id="fee" name="fee" readonly></label>
-      <fieldset>
-        <legend>Csomagajánlat:</legend>
-        <label><input type="radio" name="package" value="Alap csomag" checked> Alap csomag</label>
-        <label><input type="radio" name="package" value="Prémium csomag"> Prémium csomag</label>
-        <label><input type="radio" name="package" value="Exkluzív csomag"> Exkluzív csomag</label>
-      </fieldset>
-      <button type="submit">Ajánlat PDF generálása</button>
+  <div id="form-container">
+    <h1>Ajánlat Generátor</h1>
+    <form id="offer-form">
+      <label>Esküvő dátuma: <input type="date" id="wedding-date" /></label><br/>
+      <label>Létszám (kb): <input type="number" id="guest-count" /></label><br/>
+      <label>Szertartás kezdete: <input type="time" id="ceremony-time" /></label><br/>
+      <label>Km-díj szorzó (alapértelmezett: 150): <input type="number" id="km-multiplier" value="150" /></label><br/>
+      <label>Helyszín: <input type="text" id="location-input" placeholder="Pl. Takler Kúria, Szekszárd"/></label><br/>
+      <label>Számított km-díj (Ft): <input type="number" id="calculated-fee" readonly /></label><br/>
     </form>
+    <button onclick="generatePDF()">Ajánlat mentése PDF-be</button>
   </div>
   <script src="main.js"></script>
 </body>
