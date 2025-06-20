@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
@@ -6,21 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ajánlat Generátor</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete" async defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"
+    async
+    defer
+  ></script>
 </head>
 <body>
-  <div id="form-container">
-    <h1>Ajánlat Generátor</h1>
+  <div class="container">
+    <h1>Angel Ceremony Ajánlat Generátor</h1>
     <form id="offer-form">
-      <label>Esküvő dátuma: <input type="date" id="wedding-date" /></label><br/>
-      <label>Létszám (kb): <input type="number" id="guest-count" /></label><br/>
-      <label>Szertartás kezdete: <input type="time" id="ceremony-time" /></label><br/>
-      <label>Km-díj szorzó (alapértelmezett: 150): <input type="number" id="km-multiplier" value="150" /></label><br/>
-      <label>Helyszín: <input type="text" id="location-input" placeholder="Pl. Takler Kúria, Szekszárd"/></label><br/>
-      <label>Számított km-díj (Ft): <input type="number" id="calculated-fee" readonly /></label><br/>
+      <label for="bride">Menyasszony neve:</label>
+      <input type="text" id="bride" name="bride" required />
+
+      <label for="groom">Vőlegény neve:</label>
+      <input type="text" id="groom" name="groom" required />
+
+      <label for="date">Esküvő dátuma:</label>
+      <input type="date" id="date" name="date" required />
+
+      <label for="time">Szertartás kezdete:</label>
+      <input type="time" id="time" name="time" required />
+
+      <label for="guests">Várható létszám:</label>
+      <input type="number" id="guests" name="guests" required />
+
+      <label for="location">Helyszín:</label>
+      <input type="text" id="location" name="location" placeholder="Kezdj el gépelni..." required />
+
+      <label for="distance-cost">Kiszállási díj (Ft):</label>
+      <input type="text" id="distance-cost" name="distance-cost" readonly />
+
+      <button type="submit">Ajánlat generálása PDF-ben</button>
     </form>
-    <button onclick="generatePDF()">Ajánlat mentése PDF-be</button>
   </div>
   <script src="main.js"></script>
 </body>
