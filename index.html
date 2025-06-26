@@ -1,52 +1,45 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8" />
-    <title>Ajánlat Generátor</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="main.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ajánlat Generátor</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="main.js" defer></script>
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"
+    async
+    defer
+  ></script>
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Angel Ceremony logó" class="logo" />
-        <h1>Ajánlat Generátor</h1>
-        <form id="offer-form">
-            <label for="bride">Menyasszony neve:</label>
-            <input type="text" id="bride" name="bride" required />
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1>Angel Ceremony Ajánlatkérés</h1>
+    <form id="ajanlatForm">
+      <label for="menyasszony">Menyasszony neve:</label>
+      <input type="text" id="menyasszony" name="menyasszony" required />
 
-            <label for="groom">Vőlegény neve:</label>
-            <input type="text" id="groom" name="groom" required />
+      <label for="volegeny">Vőlegény neve:</label>
+      <input type="text" id="volegeny" name="volegeny" required />
 
-            <label for="date">Esküvő dátuma:</label>
-            <input type="date" id="date" name="date" required />
+      <label for="datum">Esküvő dátuma:</label>
+      <input type="date" id="datum" name="datum" required />
 
-            <label for="time">Szertartás időpontja:</label>
-            <input type="time" id="time" name="time" required />
+      <label for="helyszin">Helyszín:</label>
+      <input type="text" id="helyszin" name="helyszin" required />
 
-            <label for="location">Helyszín:</label>
-            <input type="text" id="location" name="location" required />
+      <label for="letszam">Létszám:</label>
+      <input type="number" id="letszam" name="letszam" required />
 
-            <label for="guests">Létszám (kb.):</label>
-            <input type="number" id="guests" name="guests" />
+      <label for="alapdij">Km-díj (Ft/km):</label>
+      <input type="number" id="alapdij" name="alapdij" value="150" />
 
-            <label for="package">Csomag:</label>
-            <select id="package" name="package">
-                <option value="alap">Alap</option>
-                <option value="premium">Prémium</option>
-                <option value="exkluziv">Exkluzív</option>
-            </select>
+      <label for="dij">Kiszállási díj (Ft):</label>
+      <input type="number" id="dij" name="dij" readonly />
 
-            <label for="pricePerKm">Km díj (Ft/km):</label>
-            <input type="number" id="pricePerKm" name="pricePerKm" value="150" />
-
-            <label for="calculatedFee">Kiszámolt km díj (Ft):</label>
-            <input type="number" id="calculatedFee" name="calculatedFee" readonly />
-
-            <label for="customFee">Felülírt km díj (opcionális):</label>
-            <input type="number" id="customFee" name="customFee" />
-
-            <button type="submit">Ajánlat generálása PDF-ben</button>
-        </form>
-    </div>
+      <button type="button" onclick="generatePDF()">PDF generálása</button>
+    </form>
+  </div>
 </body>
 </html>
