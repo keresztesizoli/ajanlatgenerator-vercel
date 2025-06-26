@@ -2,36 +2,42 @@
 console.log("Google Maps API init");
 
 function initAutocomplete() {
-  const input = document.getElementById("autocomplete");
+  const input = document.getElementById("location");
   if (!input) return;
+
   const autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener("place_changed", function () {
+  autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
-    if (!place.geometry || !place.geometry.location) {
-      alert("Hely nem található.");
-      return;
-    }
-    const destination = place.formatted_address;
-    calculateDistance(destination);
+    if (!place.formatted_address) return;
+    calculateDistance(place.formatted_address);
+  });
+
+  document.getElementById("rate").addEventListener("input", () => {
+    const destination = document.getElementById("location").value;
+    if (destination) calculateDistance(destination);
   });
 }
 
-async function calculateDistance(destination) {
-  const response = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
-  if (!response.ok) {
-    console.error("Távolság lekérdezés hiba:", await response.text());
-    return;
-  }
-  const data = await response.json();
-  if (data.distance) {
-    const km = data.distance;
-    const rate = parseInt(document.getElementById("kmRate").value || "150", 10);
-    const cost = Math.ceil(km * 2 * rate / 1000) * 1000;
-    document.getElementById("travelCost").value = cost;
-  }
-}
+function calculateDistance(destination) {
+  const origin = "2040 Budaörs, Szivárvány utca 3";
+  const rate = parseInt(document.getElementById("rate").value) || 150;
+  const service = new google.maps.DistanceMatrixService();
 
-document.getElementById("kmRate").addEventListener("input", () => {
-  const destination = document.getElementById("autocomplete").value;
-  if (destination) calculateDistance(destination);
-});
+  service.getDistanceMatrix(
+    {
+      origins: [origin],
+      destinations: [destination],
+      travelMode: google.maps.TravelMode.DRIVING,
+    },
+    (response, status) => {
+      if (status !== "OK") {
+        console.error("Távolság lekérdezés hiba:", status);
+        return;
+      }
+      const distanceInMeters = response.rows[0].elements[0].distance.value;
+      const distanceInKm = distanceInMeters / 1000;
+      const cost = Math.round((distanceInKm * 2 * rate) / 1000) * 1000;
+      document.getElementById("distanceFee").value = cost;
+    }
+  );
+}
