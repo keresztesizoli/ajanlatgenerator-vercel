@@ -1,42 +1,37 @@
-console.log("Angel Ceremony – script init");
 
-const helyszinInput = document.getElementById("helyszin");
-const kmDijInput = document.getElementById("kmDij");
-const kiszalDijInput = document.getElementById("kiszalDij");
+console.log("Google Maps API init");
 
-// újraszámítás kézi mezőváltozásra
-kmDijInput.addEventListener("input", () => {
-    updateKiszallasiDij();
-});
-kiszalDijInput.removeAttribute("readonly");
-
-function updateKiszallasiDij(distanceKm = null) {
-    const kmDij = parseInt(kmDijInput.value);
-    if (!kmDij || isNaN(kmDij)) return;
-
-    if (distanceKm !== null) {
-        const dij = Math.round(distanceKm * 2 * kmDij / 1000) * 1000;
-        kiszalDijInput.value = dij;
-    } else {
-        // ha nincs távolság, manuálisan írták át
-        kiszalDijInput.value = kiszalDijInput.value;
+function initAutocomplete() {
+  const input = document.getElementById("autocomplete");
+  if (!input) return;
+  const autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.addListener("place_changed", function () {
+    const place = autocomplete.getPlace();
+    if (!place.geometry || !place.geometry.location) {
+      alert("Hely nem található.");
+      return;
     }
+    const destination = place.formatted_address;
+    calculateDistance(destination);
+  });
 }
 
-// automatikus távolság lekérés
-helyszinInput.addEventListener("change", () => {
-    const destination = helyszinInput.value;
-    fetch(`/api/distance?destination=${encodeURIComponent(destination)}`)
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "OK") {
-                const km = data.distance_meters / 1000;
-                updateKiszallasiDij(km);
-            } else {
-                console.error("Hiba a távolság lekérésnél:", data);
-            }
-        })
-        .catch(err => {
-            console.error("Fetch hiba:", err);
-        });
+async function calculateDistance(destination) {
+  const response = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
+  if (!response.ok) {
+    console.error("Távolság lekérdezés hiba:", await response.text());
+    return;
+  }
+  const data = await response.json();
+  if (data.distance) {
+    const km = data.distance;
+    const rate = parseInt(document.getElementById("kmRate").value || "150", 10);
+    const cost = Math.ceil(km * 2 * rate / 1000) * 1000;
+    document.getElementById("travelCost").value = cost;
+  }
+}
+
+document.getElementById("kmRate").addEventListener("input", () => {
+  const destination = document.getElementById("autocomplete").value;
+  if (destination) calculateDistance(destination);
 });

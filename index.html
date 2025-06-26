@@ -1,65 +1,64 @@
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-    <meta charset="UTF-8">
-    <title>Angel Ceremony Ajánlat</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="main.js" defer></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Angel Ceremony Ajánlat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <h1>Angel Ceremony Ajánlatkérés</h1>
-        <img src="logo.png" alt="Logo" class="logo">
+  <div class="container">
+    <img src="logo.png" alt="Angel Ceremony logó" class="logo"/>
+    <h1>Esketési ajánlatkérés</h1>
 
-        <label for="menyasszony">Menyasszony neve:</label>
-        <input type="text" id="menyasszony">
+    <form id="offerForm">
+      <label for="bride">Menyasszony neve:</label>
+      <input type="text" id="bride" name="bride" required>
 
-        <label for="volegeny">Vőlegény neve:</label>
-        <input type="text" id="volegeny">
+      <label for="groom">Vőlegény neve:</label>
+      <input type="text" id="groom" name="groom" required>
 
-        <label for="datum">Esküvő dátuma:</label>
-        <input type="date" id="datum">
+      <label for="weddingDate">Esküvő dátuma:</label>
+      <input type="date" id="weddingDate" name="weddingDate" required>
 
-        <label for="ido">Szertartás kezdete:</label>
-        <div style="display: flex; gap: 10px;">
-            <select id="ora">
-                <option value="">Óra</option>
-                <option value="08">08</option>
-<option value="09">09</option>
-<option value="10">10</option>
-<option value="11">11</option>
-<option value="12">12</option>
-<option value="13">13</option>
-<option value="14">14</option>
-<option value="15">15</option>
-<option value="16">16</option>
-<option value="17">17</option>
-<option value="18">18</option>
-<option value="19">19</option>
-<option value="20">20</option>
-            </select>
-            <select id="perc">
-                <option value="">Perc</option>
-                <option value="00">00</option>
-                <option value="15">15</option>
-                <option value="30">30</option>
-                <option value="45">45</option>
-            </select>
-        </div>
+      <label for="ceremonyTime">Szertartás kezdete:</label>
+      <select id="ceremonyHour"></select> :
+      <select id="ceremonyMinute"></select>
 
-        <label for="letszam">Várható létszám:</label>
-        <input type="number" id="letszam">
+      <label for="guestCount">Várható létszám:</label>
+      <input type="number" id="guestCount" name="guestCount" min="1" required>
 
-        <label for="helyszin">Helyszín:</label>
-        <input type="text" id="helyszin">
+      <label for="location">Helyszín:</label>
+      <input id="autocomplete" placeholder="Kezdd el begépelni a helyszínt" type="text" required />
 
-        <label for="kmDij">Km-díj (Ft/km):</label>
-        <input type="number" id="kmDij" value="150">
+      <label for="kmRate">Km díj (Ft/km):</label>
+      <input type="number" id="kmRate" value="150">
 
-        <label for="kiszalDij">Kiszállási díj (Ft):</label>
-        <input type="number" id="kiszalDij" readonly>
+      <label for="travelCost">Kiszállási díj (Ft):</label>
+      <input type="number" id="travelCost" readonly>
 
-        <button id="generateBtn">PDF generálása</button>
-    </div>
+      <button type="button" onclick="generatePDF()">PDF generálása</button>
+    </form>
+  </div>
+
+  <script>
+    function populateTimeSelects() {
+      const hourSelect = document.getElementById("ceremonyHour");
+      const minuteSelect = document.getElementById("ceremonyMinute");
+      for (let h = 0; h < 24; h++) {
+        hourSelect.innerHTML += `<option value="${h.toString().padStart(2, '0')}">${h.toString().padStart(2, '0')}</option>`;
+      }
+      for (let m = 0; m < 60; m += 15) {
+        minuteSelect.innerHTML += `<option value="${m.toString().padStart(2, '0')}">${m.toString().padStart(2, '0')}</option>`;
+      }
+    }
+    populateTimeSelects();
+  </script>
+
+  <script src="main.js" defer></script>
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete">
+  </script>
 </body>
 </html>
