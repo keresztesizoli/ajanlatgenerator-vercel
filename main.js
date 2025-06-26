@@ -1,49 +1,47 @@
 
-function initAutocomplete() {
-  const input = document.getElementById("location");
-  if (!input) return;
-  const autocomplete = new google.maps.places.Autocomplete(input);
-  console.log("Google Maps API init");
+console.log("Google Maps API init");
 
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (place.formatted_address) {
-      fetch(`/api/distance?destination=${encodeURIComponent(place.formatted_address)}`)
-        .then(res => res.json())
-        .then(data => {
-          const travelField = document.getElementById("travel");
-          const rate = parseInt(document.getElementById("rate").value || "150");
-          if (data.distance) {
-            const distance = data.distance * 2;
-            const cost = Math.round(distance * rate / 1000) * 1000;
-            travelField.value = cost;
-          }
-        });
-    }
-  });
+let autocomplete;
+function initAutocomplete() {
+  const input = document.getElementById("autocomplete");
+  autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.addListener("place_changed", calculateDistance);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hour = document.getElementById("hour");
-  const minute = document.getElementById("minute");
-  for (let h = 0; h < 24; h++) hour.innerHTML += `<option value="${h.toString().padStart(2, '0')}">${h}</option>`;
-  for (let m = 0; m < 60; m += 15) minute.innerHTML += `<option value="${m.toString().padStart(2, '0')}">${m}</option>`;
+async function calculateDistance() {
+  const destination = document.getElementById("autocomplete").value;
+  const kmPrice = parseFloat(document.getElementById("kmPrice").value);
+  if (!destination || !kmPrice) return;
 
-  document.getElementById("rate").addEventListener("input", () => {
-    document.getElementById("location").dispatchEvent(new Event("change"));
-  });
+  const response = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
+  const data = await response.json();
 
-  document.getElementById("isHungarian").addEventListener("change", e => {
-    const show = e.target.value === "no";
-    document.getElementById("nonHungarianOptions").style.display = show ? "block" : "none";
-  });
+  if (data.status === "OK") {
+    const km = data.distance;
+    const total = Math.round(km * kmPrice / 1000) * 1000;
+    document.getElementById("distancePrice").value = total;
+  } else {
+    document.getElementById("distancePrice").value = "Hiba";
+  }
+}
 
-  document.getElementById("internationalOption").addEventListener("change", e => {
-    const show = e.target.value === "custom";
-    document.getElementById("customCostLabel").style.display = show ? "block" : "none";
-  });
+// km-díj változásra is újraszámolás
+document.getElementById("kmPrice").addEventListener("input", calculateDistance);
+document.getElementById("autocomplete").addEventListener("change", calculateDistance);
 
-  document.getElementById("generate").addEventListener("click", () => {
-    alert("PDF generálása folyamatban (fejlesztés alatt)");
-  });
+// Magyarországi? beállítás logika
+document.getElementById("isDomestic").addEventListener("change", function() {
+  const val = this.value;
+  const box = document.getElementById("distanceOptions");
+  box.style.display = (val === "nem") ? "block" : "none";
 });
+
+// Egyedi szöveg megjelenítése
+document.getElementById("internationalMode").addEventListener("change", function() {
+  const customBox = document.getElementById("customTextDiv");
+  customBox.style.display = this.value === "egyedi" ? "block" : "none";
+});
+
+function generatePDF() {
+  alert("PDF generálás ide kerül majd...");
+}
