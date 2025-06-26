@@ -6,13 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Esküvői Ajánlat Generátor</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete" async defer></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete"></script>
 </head>
 <body>
   <div class="container">
-    <h1>Esküvői Ajánlat Generátor</h1>
     <img src="logo.png" alt="Logo" class="logo"/>
-
+    <h1>Esküvői Ajánlat Generátor</h1>
     <form id="offerForm">
       <label for="bride">Menyasszony neve:</label>
       <input type="text" id="bride" name="bride" required />
@@ -20,65 +19,85 @@
       <label for="groom">Vőlegény neve:</label>
       <input type="text" id="groom" name="groom" required />
 
-      <label for="wedding-date">Esküvő dátuma:</label>
-      <input type="date" id="wedding-date" name="wedding-date" required />
+      <label for="date">Esküvő dátuma:</label>
+      <input type="date" id="date" name="date" required />
 
-      <label for="ceremony-hour">Szertartás kezdete:</label>
-      <div class="time-select">
-        <select id="ceremony-hour" name="ceremony-hour">
-          <option value="14">14</option>
-          <option value="15">15</option>
-          <option value="16">16</option>
-          <option value="17">17</option>
-        </select>
-        :
-        <select id="ceremony-minute" name="ceremony-minute">
-          <option value="00">00</option>
-          <option value="15">15</option>
-          <option value="30">30</option>
-          <option value="45">45</option>
-        </select>
-      </div>
-
-      <label for="guests">Várható létszám:</label>
-      <input type="number" id="guests" name="guests" required />
-
-      <label for="location">Helyszín:</label>
-      <input type="text" id="location" name="location" required placeholder="Kezdje el begépelni..." />
-
-      <label for="km-rate">Km-díj (Ft/km):</label>
-      <input type="number" id="km-rate" name="km-rate" value="150" />
-
-      <label for="travel-cost">Kiszállási díj (Ft):</label>
-      <input type="number" id="travel-cost" name="travel-cost" readonly />
-
-      <label for="is-hungary">Helyszín Magyarországon van?</label>
-      <select id="is-hungary" name="is-hungary">
-        <option value="yes">Igen</option>
-        <option value="no">Nem</option>
+      <label for="startTime">Szertartás kezdete:</label>
+      <select id="startHour" name="startHour">
+        <!-- 00-23 -->
+        <option value="00">00</option>
+<option value="01">01</option>
+<option value="02">02</option>
+<option value="03">03</option>
+<option value="04">04</option>
+<option value="05">05</option>
+<option value="06">06</option>
+<option value="07">07</option>
+<option value="08">08</option>
+<option value="09">09</option>
+<option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+<option value="19">19</option>
+<option value="20">20</option>
+<option value="21">21</option>
+<option value="22">22</option>
+<option value="23">23</option>
+      </select> :
+      <select id="startMinute" name="startMinute">
+        <option value="00">00</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
       </select>
 
-      <div id="abroad-options" style="display: none;">
-        <label for="abroad-mode">Mit tüntessünk fel az ajánlatban?</label>
-        <select id="abroad-mode" name="abroad-mode">
-          <option value="default">Alapértelmezett szöveg</option>
-          <option value="km">Km-díj</option>
+      <label for="guestCount">Létszám:</label>
+      <input type="number" id="guestCount" name="guestCount" required />
+
+      <label for="location">Helyszín (Google-alapú kereső):</label>
+      <input id="locationInput" name="location" placeholder="Helyszín megadása" type="text" required />
+
+      <label for="isHungary">Magyarországi helyszín?</label>
+      <select id="isHungary" name="isHungary">
+        <option value="igen">Igen</option>
+        <option value="nem">Nem</option>
+      </select>
+
+      <div id="internationalOptions" style="display: none;">
+        <label for="customCostOption">Mit tüntessünk fel az ajánlatban?</label>
+        <select id="customCostOption" name="customCostOption">
+          <option value="km">Km alapú díj</option>
+          <option value="custom">Egyedi szöveg</option>
         </select>
 
-        <label for="custom-text">Egyedi szöveg:</label>
-        <input type="text" id="custom-text" name="custom-text" value="repülőjegy + szállás + egyéb költségek, amiket a megrendelő fizet." />
+        <label for="customText">Egyedi szöveg:</label>
+        <input type="text" id="customText" name="customText"
+          value="repülőjegy + szállás + egyéb költségek, amiket a megrendelő fizet" />
       </div>
+
+      <label for="kmRate">Km díj (Ft/km):</label>
+      <input type="number" id="kmRate" name="kmRate" value="150" />
+
+      <label for="travelCost">Kiszállási díj (automatikus vagy kézi):</label>
+      <input type="number" id="travelCost" name="travelCost" readonly />
 
       <label for="package">Választható csomag:</label>
       <select id="package" name="package">
-        <option value="basic">Alap csomag</option>
+        <option value="alap">Alap csomag</option>
         <option value="standard">Standard csomag</option>
         <option value="premium">Prémium csomag</option>
       </select>
 
-      <button type="submit">Ajánlat generálása PDF-ben</button>
+      <button type="button" onclick="generatePDF()">Ajánlat generálása PDF-ben</button>
     </form>
   </div>
+
   <script src="main.js"></script>
 </body>
 </html>

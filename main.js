@@ -2,28 +2,33 @@
 console.log("Google Maps API init");
 
 function initAutocomplete() {
-  const input = document.getElementById("location");
+  const input = document.getElementById("locationInput");
   if (!input) return;
 
   const autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.setFields(["geometry", "formatted_address"]);
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
-    if (!place.geometry) return;
-
-    const destination = place.formatted_address;
-    const kmRate = parseInt(document.getElementById("km-rate").value) || 150;
-    fetch(`/api/distance?destination=${encodeURIComponent(destination)}&rate=${kmRate}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          document.getElementById("travel-cost").value = data.cost;
-        }
-      });
+    if (place && place.formatted_address) {
+      fetch(`/api/distance?destination=${encodeURIComponent(place.formatted_address)}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.kmFee !== undefined) {
+            document.getElementById("travelCost").value = data.kmFee;
+          }
+        });
+    }
   });
 }
 
-document.getElementById("is-hungary").addEventListener("change", e => {
-  const abroad = e.target.value === "no";
-  document.getElementById("abroad-options").style.display = abroad ? "block" : "none";
+document.getElementById("isHungary").addEventListener("change", (e) => {
+  const intl = document.getElementById("internationalOptions");
+  intl.style.display = e.target.value === "nem" ? "block" : "none";
 });
+
+document.getElementById("kmRate").addEventListener("input", () => {
+  document.getElementById("locationInput").dispatchEvent(new Event("blur"));
+});
+
+function generatePDF() {
+  alert("PDF generálása most még nem aktív.");
+}

@@ -1,25 +1,41 @@
 
 body {
   font-family: sans-serif;
-  background: #f7f2f0;
+  background: #f7f2f2;
   color: #333;
-  padding: 20px;
+  padding: 2em;
 }
 .container {
   max-width: 600px;
-  margin: auto;
-}
-label {
-  display: block;
-  margin-top: 10px;
-}
-input, select, button {
-  width: 100%;
-  padding: 8px;
-  margin-top: 5px;
+  margin: 0 auto;
+  background: white;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 .logo {
-  max-width: 150px;
+  width: 100px;
   display: block;
-  margin: 10px auto;
+  margin: 0 auto 1em;
+}
+form label {
+  display: block;
+  margin-top: 1em;
+  font-weight: bold;
+}
+form input, form select {
+  width: 100%;
+  padding: 0.5em;
+  margin-top: 0.2em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+button {
+  margin-top: 2em;
+  width: 100%;
+  padding: 0.8em;
+  background: #eac7c7;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
 }
