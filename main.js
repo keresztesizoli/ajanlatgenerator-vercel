@@ -2,7 +2,8 @@
 function initAutocomplete() {
   console.log("Google Maps API init");
   const autocomplete = new google.maps.places.Autocomplete(
-    document.getElementById("autocomplete")
+    document.getElementById("autocomplete"),
+    { types: ["geocode"] }
   );
 
   autocomplete.addListener("place_changed", () => {
