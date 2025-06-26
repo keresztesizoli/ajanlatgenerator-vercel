@@ -1,33 +1,42 @@
+console.log("Angel Ceremony – script init");
 
-console.log("Google Maps API init");
+const helyszinInput = document.getElementById("helyszin");
+const kmDijInput = document.getElementById("kmDij");
+const kiszalDijInput = document.getElementById("kiszalDij");
 
-window.initAutocomplete = function () {
-  const input = document.getElementById("helyszin");
-  if (!input) return;
-  const autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener("place_changed", function () {
-    const place = autocomplete.getPlace();
-    if (!place.formatted_address) return;
-    calculateDistance(place.formatted_address);
-  });
-};
+// újraszámítás kézi mezőváltozásra
+kmDijInput.addEventListener("input", () => {
+    updateKiszallasiDij();
+});
+kiszalDijInput.removeAttribute("readonly");
 
-function calculateDistance(destination) {
-  const base = "2040 Budaörs, Szivárvány utca 3";
-  const kmRate = parseInt(document.getElementById("alapdij").value) || 150;
+function updateKiszallasiDij(distanceKm = null) {
+    const kmDij = parseInt(kmDijInput.value);
+    if (!kmDij || isNaN(kmDij)) return;
 
-  fetch(`/api/distance?destination=${encodeURIComponent(destination)}`)
-    .then(res => res.json())
-    .then(data => {
-      const distanceKm = data.distance_km;
-      let price = Math.round(distanceKm * 2 * kmRate / 1000) * 1000;
-      document.getElementById("dij").value = price;
-    })
-    .catch(err => {
-      console.error("Távolság lekérdezés hiba:", err);
-    });
+    if (distanceKm !== null) {
+        const dij = Math.round(distanceKm * 2 * kmDij / 1000) * 1000;
+        kiszalDijInput.value = dij;
+    } else {
+        // ha nincs távolság, manuálisan írták át
+        kiszalDijInput.value = kiszalDijInput.value;
+    }
 }
 
-function generatePDF() {
-  window.print();
-}
+// automatikus távolság lekérés
+helyszinInput.addEventListener("change", () => {
+    const destination = helyszinInput.value;
+    fetch(`/api/distance?destination=${encodeURIComponent(destination)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "OK") {
+                const km = data.distance_meters / 1000;
+                updateKiszallasiDij(km);
+            } else {
+                console.error("Hiba a távolság lekérésnél:", data);
+            }
+        })
+        .catch(err => {
+            console.error("Fetch hiba:", err);
+        });
+});
