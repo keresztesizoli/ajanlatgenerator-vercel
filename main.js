@@ -1,28 +1,34 @@
-function generatePDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
+console.log("Google Maps API init");
 
-  const bride = document.getElementById('brideName').value;
-  const groom = document.getElementById('groomName').value;
-  const date = document.getElementById('weddingDate').value;
-  const time = document.getElementById('ceremonyTime').value;
-  const location = document.getElementById('location').value;
-  const guests = document.getElementById('guests').value;
-  const kmPrice = document.getElementById('kmPrice').value;
+let autocomplete;
 
-  const content = `
-    Menyasszony: ${bride}
-    Vőlegény: ${groom}
-    Esküvő dátuma: ${date}
-    Szertartás kezdete: ${time}
-    Helyszín: ${location}
-    Létszám: ${guests} fő
-    Számított km-díj: ${kmPrice} Ft
-  `;
+function initAutocomplete() {
+  const locationInput = document.getElementById("location");
+  autocomplete = new google.maps.places.Autocomplete(locationInput, { types: ['geocode'] });
 
-  doc.setFontSize(18);
-  doc.text("Angel Ceremony – Esketési ajánlat", 20, 20);
-  doc.setFontSize(12);
-  doc.text(content, 20, 40);
-  doc.save("eskuvoi_ajanlat.pdf");
+  autocomplete.addListener("place_changed", async () => {
+    const place = autocomplete.getPlace();
+    if (place && place.formatted_address) {
+      const destination = place.formatted_address;
+      try {
+        const res = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
+        const data = await res.json();
+        if (data.price) {
+          document.getElementById("price").value = data.price;
+        }
+      } catch (err) {
+        console.error("Távolság lekérdezés hiba:", err);
+      }
+    }
+  });
+}
+
+async function generatePDF() {
+  const form = document.getElementById("offerForm");
+  const pdf = new window.jspdf.jsPDF();
+  await html2canvas(form).then((canvas) => {
+    const imgData = canvas.toDataURL("image/png");
+    pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
+    pdf.save("ajanlat.pdf");
+  });
 }

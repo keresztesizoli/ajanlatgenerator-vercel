@@ -3,34 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Angel Ceremony – Esketési ajánlat</title>
+  <title>Ajánlat Generátor</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="main.js" defer></script>
 </head>
 <body>
-  <div class="form-container">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1>Angel Ceremony – Esketési ajánlat</h1>
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo">
+    <h1>Angel Ceremony Ajánlatkérés</h1>
     <form id="offerForm">
-      <label>Menyasszony neve: <input type="text" id="brideName" /></label>
-      <label>Vőlegény neve: <input type="text" id="groomName" /></label>
-      <label>Esküvő dátuma: <input type="date" id="weddingDate" /></label>
-      <label>Szertartás kezdete: <input type="time" id="ceremonyTime" /></label>
-      <label>Helyszín: <input type="text" id="location" /></label>
-      <label>Létszám (kb): <input type="number" id="guests" /></label>
-      <label>Számított km-díj (Ft): <input type="number" id="kmPrice" readonly /></label>
-      <button type="button" onclick="generatePDF()">Ajánlat letöltése (PDF)</button>
+      <label for="bride">Menyasszony neve:</label>
+      <input type="text" id="bride" name="bride" required>
+
+      <label for="groom">Vőlegény neve:</label>
+      <input type="text" id="groom" name="groom" required>
+
+      <label for="date">Esküvő dátuma:</label>
+      <input type="date" id="date" name="date" required>
+
+      <label for="guests">Létszám:</label>
+      <input type="number" id="guests" name="guests" required>
+
+      <label for="location">Helyszín:</label>
+      <input id="location" name="location" placeholder="Kezdd el gépelni a helyszínt..." required>
+
+      <label for="price">Kiszállási díj (Ft):</label>
+      <input type="text" id="price" name="price" readonly>
+
+      <button type="button" onclick="generatePDF()">PDF generálása</button>
     </form>
   </div>
 
-  <!-- Hidden PDF content -->
-  <div id="pdf-content" style="display:none;">
-    <img src="logo.png" alt="Logo" style="width:100px;" />
-    <h1>Angel Ceremony – Esketési ajánlat</h1>
-    <div id="pdf-body"></div>
-  </div>
-
-  <script src="main.js"></script>
+  <script async
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete">
+  </script>
 </body>
 </html>
