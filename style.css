@@ -1,43 +1,39 @@
 
 body {
-  font-family: Arial, sans-serif;
-  background: #f9f5f0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f7f4f0;
   color: #333;
-  padding: 2rem;
+  padding: 20px;
 }
 .container {
-  max-width: 600px;
-  margin: 0 auto;
   background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  padding: 30px;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
 }
 .logo {
   max-width: 150px;
   display: block;
-  margin: 0 auto 1rem;
+  margin: 0 auto 20px;
 }
-label {
+form label {
   display: block;
-  margin-top: 1rem;
+  margin-top: 15px;
 }
-input, select {
+form input, form select {
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
-}
-.time-selectors {
-  display: flex;
-  gap: 0.5rem;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
 }
 button {
-  margin-top: 1.5rem;
-  padding: 0.75rem;
-  background: #e7c8d4;
+  background-color: #e0cfc1;
   border: none;
-  color: white;
-  font-size: 1rem;
-  border-radius: 0.5rem;
+  padding: 10px 20px;
+  margin-top: 20px;
+  border-radius: 6px;
   cursor: pointer;
 }

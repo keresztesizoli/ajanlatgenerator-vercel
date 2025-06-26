@@ -1,44 +1,38 @@
 
-console.log("Google Maps API init");
-
-let autocomplete;
-
 function initAutocomplete() {
-  const input = document.getElementById("location");
-  if (!input) return;
+  console.log("Google Maps API init");
+  const locationInput = document.getElementById("location");
+  if (!locationInput) return;
 
-  autocomplete = new google.maps.places.Autocomplete(input, {
-    types: ["geocode"]
+  const autocomplete = new google.maps.places.Autocomplete(locationInput, {
+    types: ["geocode"],
+    componentRestrictions: { country: "hu" },
   });
 
   autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
-    if (!place.geometry) return;
+    if (place.formatted_address) {
+      fetch(`/api/distance?destination=${encodeURIComponent(place.formatted_address)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.distance_km && data.rate) {
+            const price = Math.round(data.distance_km * data.rate / 1000) * 1000;
+            document.getElementById("price").value = price;
+          }
+        })
+        .catch(err => {
+          console.error("Hiba a távolság lekérdezésnél:", err);
+        });
+    }
+  });
 
-    calculateDistance(place.formatted_address);
+  const rateInput = document.getElementById("rate");
+  rateInput.addEventListener("input", () => {
+    const event = new Event("place_changed");
+    autocomplete.dispatchEvent(event);
   });
 }
 
-function calculateDistance(destination) {
-  const origin = "2040 Budaörs, Szivárvány utca 3";
-  const kmRate = parseInt(document.getElementById("kmRate").value) || 150;
-
-  fetch(`/api/distance?destination=${encodeURIComponent(destination)}`)
-    .then((res) => res.json())
-    .then((data) => {
-      if (data.distanceKm) {
-        const cost = Math.round(data.distanceKm * 2 * kmRate / 1000) * 1000;
-        document.getElementById("travelCost").value = cost;
-      } else {
-        console.error("No distance returned");
-      }
-    })
-    .catch((err) => {
-      console.error("Távolság lekérdezés hiba:", err);
-    });
+function generatePDF() {
+  alert("PDF-generálás itt történne.");
 }
-
-document.getElementById("kmRate").addEventListener("input", () => {
-  const loc = document.getElementById("location").value;
-  if (loc) calculateDistance(loc);
-});
