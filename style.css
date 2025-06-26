@@ -1,40 +1,40 @@
-.container {
-  max-width: 600px;
-  margin: auto;
-  font-family: Arial, sans-serif;
-  background: #fefdfd;
-  padding: 2em;
-  border-radius: 16px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fdf9f7;
+    color: #4a3c3c;
+    margin: 0;
+    padding: 2rem;
 }
-h1 {
-  text-align: center;
-  color: #cfa8a8;
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
 }
 .logo {
-  display: block;
-  margin: 0 auto 20px;
-  max-height: 80px;
+    max-width: 200px;
+    display: block;
+    margin: 0 auto 1rem;
+}
+form {
+    display: flex;
+    flex-direction: column;
 }
 label {
-  display: block;
-  margin-top: 1em;
-  color: #333;
+    margin-top: 1rem;
 }
-input {
-  width: 100%;
-  padding: 0.5em;
-  margin-top: 0.3em;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+input, select, button {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
 }
 button {
-  margin-top: 1.5em;
-  width: 100%;
-  background: #eacfd0;
-  border: none;
-  padding: 1em;
-  border-radius: 8px;
-  font-size: 1em;
-  cursor: pointer;
+    background-color: #e3c7c2;
+    color: #4a3c3c;
+    font-weight: bold;
+    margin-top: 1.5rem;
+    cursor: pointer;
 }

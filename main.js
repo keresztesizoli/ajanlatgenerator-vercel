@@ -1,34 +1,34 @@
-console.log("Google Maps API init");
 
-let autocomplete;
+document.addEventListener("DOMContentLoaded", () => {
+    const locationInput = document.getElementById("location");
+    const calculatedFeeInput = document.getElementById("calculatedFee");
+    const pricePerKmInput = document.getElementById("pricePerKm");
+    const customFeeInput = document.getElementById("customFee");
 
-function initAutocomplete() {
-  const locationInput = document.getElementById("location");
-  autocomplete = new google.maps.places.Autocomplete(locationInput, { types: ['geocode'] });
+    if (window.google) {
+        const autocomplete = new google.maps.places.Autocomplete(locationInput);
+        autocomplete.addListener("place_changed", () => {
+            const place = autocomplete.getPlace();
+            const destination = place.formatted_address || place.name;
 
-  autocomplete.addListener("place_changed", async () => {
-    const place = autocomplete.getPlace();
-    if (place && place.formatted_address) {
-      const destination = place.formatted_address;
-      try {
-        const res = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
-        const data = await res.json();
-        if (data.price) {
-          document.getElementById("price").value = data.price;
-        }
-      } catch (err) {
-        console.error("Távolság lekérdezés hiba:", err);
-      }
+            fetch(`/api/distance?destination=${encodeURIComponent(destination)}`)
+                .then(res => res.json())
+                .then(data => {
+                    const distanceKm = data.distance_km;
+                    const pricePerKm = parseInt(pricePerKmInput.value || "150", 10);
+                    const fee = Math.ceil(distanceKm * pricePerKm / 1000) * 1000;
+                    calculatedFeeInput.value = fee;
+                    if (!customFeeInput.value) customFeeInput.value = fee;
+                })
+                .catch(err => {
+                    console.error("Távolság lekérdezés hiba:", err);
+                    calculatedFeeInput.value = "";
+                });
+        });
     }
-  });
-}
 
-async function generatePDF() {
-  const form = document.getElementById("offerForm");
-  const pdf = new window.jspdf.jsPDF();
-  await html2canvas(form).then((canvas) => {
-    const imgData = canvas.toDataURL("image/png");
-    pdf.addImage(imgData, "PNG", 10, 10, 190, 0);
-    pdf.save("ajanlat.pdf");
-  });
-}
+    document.getElementById("offer-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        alert("PDF generálás még nem implementált.");
+    });
+});
