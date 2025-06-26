@@ -1,43 +1,44 @@
 
 console.log("Google Maps API init");
 
+let autocomplete;
+
 function initAutocomplete() {
   const input = document.getElementById("location");
   if (!input) return;
 
-  const autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (!place.formatted_address) return;
-    calculateDistance(place.formatted_address);
+  autocomplete = new google.maps.places.Autocomplete(input, {
+    types: ["geocode"]
   });
 
-  document.getElementById("rate").addEventListener("input", () => {
-    const destination = document.getElementById("location").value;
-    if (destination) calculateDistance(destination);
+  autocomplete.addListener("place_changed", () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+
+    calculateDistance(place.formatted_address);
   });
 }
 
 function calculateDistance(destination) {
   const origin = "2040 Budaörs, Szivárvány utca 3";
-  const rate = parseInt(document.getElementById("rate").value) || 150;
-  const service = new google.maps.DistanceMatrixService();
+  const kmRate = parseInt(document.getElementById("kmRate").value) || 150;
 
-  service.getDistanceMatrix(
-    {
-      origins: [origin],
-      destinations: [destination],
-      travelMode: google.maps.TravelMode.DRIVING,
-    },
-    (response, status) => {
-      if (status !== "OK") {
-        console.error("Távolság lekérdezés hiba:", status);
-        return;
+  fetch(`/api/distance?destination=${encodeURIComponent(destination)}`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.distanceKm) {
+        const cost = Math.round(data.distanceKm * 2 * kmRate / 1000) * 1000;
+        document.getElementById("travelCost").value = cost;
+      } else {
+        console.error("No distance returned");
       }
-      const distanceInMeters = response.rows[0].elements[0].distance.value;
-      const distanceInKm = distanceInMeters / 1000;
-      const cost = Math.round((distanceInKm * 2 * rate) / 1000) * 1000;
-      document.getElementById("distanceFee").value = cost;
-    }
-  );
+    })
+    .catch((err) => {
+      console.error("Távolság lekérdezés hiba:", err);
+    });
 }
+
+document.getElementById("kmRate").addEventListener("input", () => {
+  const loc = document.getElementById("location").value;
+  if (loc) calculateDistance(loc);
+});

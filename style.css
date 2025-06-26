@@ -1,54 +1,43 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: #f5f3f7;
+  background: #f9f5f0;
   color: #333;
-  margin: 0;
-  padding: 0;
+  padding: 2rem;
 }
-
 .container {
   max-width: 600px;
+  margin: 0 auto;
   background: white;
-  margin: 30px auto;
-  padding: 2em;
+  padding: 2rem;
+  border-radius: 1rem;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  border-radius: 12px;
 }
-
 .logo {
-  max-width: 180px;
+  max-width: 150px;
   display: block;
-  margin: 0 auto 1em auto;
+  margin: 0 auto 1rem;
 }
-
-h1 {
-  text-align: center;
-  color: #b48fbc;
-}
-
-form label {
+label {
   display: block;
-  margin-top: 1em;
+  margin-top: 1rem;
 }
-
-form input, form select, form button {
+input, select {
   width: 100%;
-  padding: 0.7em;
-  margin-top: 0.3em;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
 }
-
-form button {
-  background-color: #b48fbc;
-  color: white;
-  font-weight: bold;
-  margin-top: 2em;
-  cursor: pointer;
+.time-selectors {
+  display: flex;
+  gap: 0.5rem;
+}
+button {
+  margin-top: 1.5rem;
+  padding: 0.75rem;
+  background: #e7c8d4;
   border: none;
-}
-
-form button:hover {
-  background-color: #9c7ea9;
+  color: white;
+  font-size: 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
 }
