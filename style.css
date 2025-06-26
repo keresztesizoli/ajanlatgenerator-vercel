@@ -1,41 +1,44 @@
-
 body {
-  font-family: sans-serif;
-  background: #f7f2f2;
+  font-family: Arial, sans-serif;
+  background-color: #fdf6f0;
   color: #333;
-  padding: 2em;
+  padding: 20px;
 }
 .container {
-  max-width: 600px;
-  margin: 0 auto;
-  background: white;
-  padding: 2em;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 700px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+h1 {
+  text-align: center;
+  color: #b48e8e;
 }
 .logo {
-  width: 100px;
   display: block;
-  margin: 0 auto 1em;
+  margin: 0 auto 20px;
+  max-width: 150px;
 }
-form label {
+label {
   display: block;
-  margin-top: 1em;
-  font-weight: bold;
+  margin: 10px 0;
 }
-form input, form select {
+input, select, button {
   width: 100%;
-  padding: 0.5em;
-  margin-top: 0.2em;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 5px;
 }
 button {
-  margin-top: 2em;
-  width: 100%;
-  padding: 0.8em;
-  background: #eac7c7;
-  border: none;
-  border-radius: 5px;
+  background-color: #e0bfb8;
+  color: white;
   font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #d8a9a0;
 }
