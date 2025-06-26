@@ -1,47 +1,29 @@
 
 console.log("Google Maps API init");
 
-let autocomplete;
 function initAutocomplete() {
-  const input = document.getElementById("autocomplete");
-  autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener("place_changed", calculateDistance);
+  const input = document.getElementById("location");
+  if (!input) return;
+
+  const autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.setFields(["geometry", "formatted_address"]);
+  autocomplete.addListener("place_changed", () => {
+    const place = autocomplete.getPlace();
+    if (!place.geometry) return;
+
+    const destination = place.formatted_address;
+    const kmRate = parseInt(document.getElementById("km-rate").value) || 150;
+    fetch(`/api/distance?destination=${encodeURIComponent(destination)}&rate=${kmRate}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("travel-cost").value = data.cost;
+        }
+      });
+  });
 }
 
-async function calculateDistance() {
-  const destination = document.getElementById("autocomplete").value;
-  const kmPrice = parseFloat(document.getElementById("kmPrice").value);
-  if (!destination || !kmPrice) return;
-
-  const response = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
-  const data = await response.json();
-
-  if (data.status === "OK") {
-    const km = data.distance;
-    const total = Math.round(km * kmPrice / 1000) * 1000;
-    document.getElementById("distancePrice").value = total;
-  } else {
-    document.getElementById("distancePrice").value = "Hiba";
-  }
-}
-
-// km-díj változásra is újraszámolás
-document.getElementById("kmPrice").addEventListener("input", calculateDistance);
-document.getElementById("autocomplete").addEventListener("change", calculateDistance);
-
-// Magyarországi? beállítás logika
-document.getElementById("isDomestic").addEventListener("change", function() {
-  const val = this.value;
-  const box = document.getElementById("distanceOptions");
-  box.style.display = (val === "nem") ? "block" : "none";
+document.getElementById("is-hungary").addEventListener("change", e => {
+  const abroad = e.target.value === "no";
+  document.getElementById("abroad-options").style.display = abroad ? "block" : "none";
 });
-
-// Egyedi szöveg megjelenítése
-document.getElementById("internationalMode").addEventListener("change", function() {
-  const customBox = document.getElementById("customTextDiv");
-  customBox.style.display = this.value === "egyedi" ? "block" : "none";
-});
-
-function generatePDF() {
-  alert("PDF generálás ide kerül majd...");
-}

@@ -1,71 +1,84 @@
+
 <!DOCTYPE html>
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <title>Ajánlat Generátor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Esküvői Ajánlat Generátor</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7OZMaGRgCU6jBubYIH4RxW_SoEOtw13Y&libraries=places&callback=initAutocomplete" async defer></script>
 </head>
 <body>
   <div class="container">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1>Ajánlatkérés</h1>
+    <h1>Esküvői Ajánlat Generátor</h1>
+    <img src="logo.png" alt="Logo" class="logo"/>
 
     <form id="offerForm">
-      <label for="names">Menyasszony és vőlegény neve:</label>
-      <input type="text" id="names" name="names" required />
+      <label for="bride">Menyasszony neve:</label>
+      <input type="text" id="bride" name="bride" required />
 
-      <label for="date">Esküvő dátuma:</label>
-      <input type="date" id="date" name="date" required />
+      <label for="groom">Vőlegény neve:</label>
+      <input type="text" id="groom" name="groom" required />
 
-      <label for="time">Szertartás kezdete:</label>
-      <select id="time" name="time">
-        <!-- Óra -->
-        ${[...Array(24).keys()].map(h => `<option value="${h}:00">${h}:00</option><option value="${h}:15">${h}:15</option><option value="${h}:30">${h}:30</option><option value="${h}:45">${h}:45</option>`).join("")}
-      </select>
+      <label for="wedding-date">Esküvő dátuma:</label>
+      <input type="date" id="wedding-date" name="wedding-date" required />
 
-      <label for="location">Esküvő helyszíne:</label>
-      <input type="text" id="autocomplete" name="location" placeholder="Kezdj el gépelni..." required />
-
-      <label for="participant">Létszám (kb):</label>
-      <input type="number" id="participant" name="participant" min="1" required />
-
-      <label for="isDomestic">Helyszín Magyarországon?</label>
-      <select id="isDomestic" name="isDomestic">
-        <option value="igen">Igen</option>
-        <option value="nem">Nem</option>
-      </select>
-
-      <div id="distanceOptions" style="display: none;">
-        <label for="internationalMode">Mit tüntessünk fel az ajánlatban?</label>
-        <select id="internationalMode" name="internationalMode">
-          <option value="km">Kiszállási díj (km alapján)</option>
-          <option value="egyedi">Egyedi szöveg</option>
+      <label for="ceremony-hour">Szertartás kezdete:</label>
+      <div class="time-select">
+        <select id="ceremony-hour" name="ceremony-hour">
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
         </select>
-
-        <div id="customTextDiv" style="display: none;">
-          <label for="customText">Egyedi szöveg:</label>
-          <input type="text" id="customText" value="repülőjegy + szállás + egyéb költségek, amiket a megrendelő fizet" />
-        </div>
+        :
+        <select id="ceremony-minute" name="ceremony-minute">
+          <option value="00">00</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="45">45</option>
+        </select>
       </div>
 
-      <label for="kmPrice">Km-díj (Ft/km):</label>
-      <input type="number" id="kmPrice" name="kmPrice" value="150" />
+      <label for="guests">Várható létszám:</label>
+      <input type="number" id="guests" name="guests" required />
 
-      <label for="distancePrice">Kiszállási díj (Ft):</label>
-      <input type="number" id="distancePrice" name="distancePrice" readonly />
+      <label for="location">Helyszín:</label>
+      <input type="text" id="location" name="location" required placeholder="Kezdje el begépelni..." />
 
-      <label for="package">Választott csomag:</label>
-      <select id="package" name="package">
-        <option value="Alap csomag">Alap csomag</option>
-        <option value="Romantikus csomag">Romantikus csomag</option>
-        <option value="Exkluzív csomag">Exkluzív csomag</option>
+      <label for="km-rate">Km-díj (Ft/km):</label>
+      <input type="number" id="km-rate" name="km-rate" value="150" />
+
+      <label for="travel-cost">Kiszállási díj (Ft):</label>
+      <input type="number" id="travel-cost" name="travel-cost" readonly />
+
+      <label for="is-hungary">Helyszín Magyarországon van?</label>
+      <select id="is-hungary" name="is-hungary">
+        <option value="yes">Igen</option>
+        <option value="no">Nem</option>
       </select>
 
-      <button type="button" onclick="generatePDF()">PDF generálása</button>
+      <div id="abroad-options" style="display: none;">
+        <label for="abroad-mode">Mit tüntessünk fel az ajánlatban?</label>
+        <select id="abroad-mode" name="abroad-mode">
+          <option value="default">Alapértelmezett szöveg</option>
+          <option value="km">Km-díj</option>
+        </select>
+
+        <label for="custom-text">Egyedi szöveg:</label>
+        <input type="text" id="custom-text" name="custom-text" value="repülőjegy + szállás + egyéb költségek, amiket a megrendelő fizet." />
+      </div>
+
+      <label for="package">Választható csomag:</label>
+      <select id="package" name="package">
+        <option value="basic">Alap csomag</option>
+        <option value="standard">Standard csomag</option>
+        <option value="premium">Prémium csomag</option>
+      </select>
+
+      <button type="submit">Ajánlat generálása PDF-ben</button>
     </form>
   </div>
-
   <script src="main.js"></script>
 </body>
 </html>
