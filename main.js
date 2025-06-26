@@ -1,34 +1,23 @@
-
 console.log("Google Maps API init");
 
-function initAutocomplete() {
-  const input = document.getElementById("locationInput");
-  if (!input) return;
+window.addEventListener("DOMContentLoaded", () => {
+  const autocompleteEl = document.querySelector("gmpx-placeautocomplete");
 
-  const autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.addListener("place_changed", () => {
-    const place = autocomplete.getPlace();
-    if (place && place.formatted_address) {
-      fetch(`/api/distance?destination=${encodeURIComponent(place.formatted_address)}`)
-        .then((res) => res.json())
-        .then((data) => {
+  if (autocompleteEl) {
+    autocompleteEl.addEventListener("gmpx-placechange", async (e) => {
+      const place = e.detail;
+      if (place && place.formatted_address) {
+        const encoded = encodeURIComponent(place.formatted_address);
+        try {
+          const res = await fetch(`/api/distance?destination=${encoded}`);
+          const data = await res.json();
           if (data.kmFee !== undefined) {
             document.getElementById("travelCost").value = data.kmFee;
           }
-        });
-    }
-  });
-}
-
-document.getElementById("isHungary").addEventListener("change", (e) => {
-  const intl = document.getElementById("internationalOptions");
-  intl.style.display = e.target.value === "nem" ? "block" : "none";
+        } catch (err) {
+          console.error("Hiba a kiszállási díj lekérdezésekor:", err);
+        }
+      }
+    });
+  }
 });
-
-document.getElementById("kmRate").addEventListener("input", () => {
-  document.getElementById("locationInput").dispatchEvent(new Event("blur"));
-});
-
-function generatePDF() {
-  alert("PDF generálása most még nem aktív.");
-}
