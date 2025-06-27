@@ -56,3 +56,19 @@ function generatePreview() {
 
 calculateTravelCost();
 handleLocationType();
+
+document.getElementById("generatePDF").addEventListener("click", () => {
+  const outputDiv = document.getElementById("output");
+  if (!outputDiv.innerHTML.trim()) {
+    alert("Előbb készítsd el az előnézetet!");
+    return;
+  }
+  const opt = {
+    margin: 0.5,
+    filename: 'ajanlat.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(outputDiv).save();
+});

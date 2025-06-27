@@ -55,31 +55,27 @@
       <label>Kiszállási díj (Ft):
         <input type="number" id="travelCost" />
       </label>
+
       <div id="customTextContainer" style="display: none;">
         <label>Egyedi szöveg:
           <input type="text" id="customText" value="repülő + szállás + egyéb költségek, amit a megrendelő fizet" />
         </label>
+        <label>Ajánlatban szereplő szöveg típusa:
+          <select id="foreignCostType">
+            <option value="km">Km-díj alapján</option>
+            <option value="custom">Egyedi szöveg</option>
+          </select>
+        </label>
       </div>
+
       <button type="button" onclick="generatePreview()">Előnézet</button>
+      <button type="button" id="generatePDF" style="display:none;">PDF mentése</button>
     </form>
+
     <div id="output"></div>
-<button id="generatePDF" type="button">PDF mentése</button>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   </div>
+
   <script src="main.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </body>
 </html>
-
-<script>
-document.getElementById("generatePDF").addEventListener("click", () => {
-  const element = document.getElementById("output");
-  const opt = {
-    margin:       0.5,
-    filename:     'ajanlat.pdf',
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2 },
-    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(element).save();
-});
-</script>
