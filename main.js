@@ -47,27 +47,32 @@ function generatePreview() {
   const customText = document.getElementById("customText").value;
   const costType = document.getElementById("foreignCostType")?.value;
 
+  const logoHTML = '<img src="logo.png" alt="Angel Ceremony logó" style="max-width: 150px; margin-bottom: 1em;" />';
+
   let costText = isHungary ? `${travelCost} Ft` : (costType === "custom" ? customText : `${travelCost} Ft`);
 
   const output = `
-    <h3>Ajánlat előnézet</h3>
-    <p><strong>${bride}</strong> és <strong>${groom}</strong> esküvője</p>
-    <p>Dátum: ${date}, időpont: ${hour}:${minute}</p>
-    <p>Helyszín: ${location} (${isHungary ? "Magyarországon" : "külföldön"})</p>
-    <p>Vendégek száma: ${guests}</p>
-    <p>Csomag: ${package}</p>
-    <p>Kiszállási díj: ${costText}</p>
+    <div class="pdf-content">
+      ${logoHTML}
+      <h2>Ajánlat</h2>
+      <p><strong>${bride}</strong> és <strong>${groom}</strong> részére</p>
+      <p><strong>Dátum:</strong> ${date}</p>
+      <p><strong>Időpont:</strong> ${hour}:${minute}</p>
+      <p><strong>Helyszín:</strong> ${location} (${isHungary ? "Magyarországon" : "külföldön"})</p>
+      <p><strong>Vendégek száma:</strong> ${guests} fő</p>
+      <p><strong>Csomag:</strong> ${package}</p>
+      <p><strong>Kiszállási díj:</strong> ${costText}</p>
+    </div>
   `;
 
   document.getElementById("output").innerHTML = output;
   document.getElementById("generatePDF").style.display = "inline-block";
 }
 
-// PDF gomb eseménykezelő
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("generatePDF").addEventListener("click", () => {
-    const outputDiv = document.getElementById("output");
-    if (!outputDiv.innerHTML.trim()) {
+    const content = document.querySelector(".pdf-content");
+    if (!content) {
       alert("Előbb készítsd el az előnézetet!");
       return;
     }
@@ -78,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
-    html2pdf().set(opt).from(outputDiv).save();
+    html2pdf().set(opt).from(content).save();
   });
 
   calculateTravelCost();
