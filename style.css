@@ -31,19 +31,22 @@ button {
   cursor: pointer;
 }
 .a4 {
-  width: 794px;
-  min-height: 1123px;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
   background: white;
-  padding: 40px;
+  color: #4b3f3f;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 .logo {
   width: 120px;
   margin-bottom: 20px;
 }
 .anita {
-  width: 180px;
-  float: right;
+  width: 40%;
+  display: inline-block;
+  vertical-align: top;
   margin-left: 20px;
 }
 .details {
@@ -53,4 +56,10 @@ button {
 ul {
   list-style: disc;
   padding-left: 20px;
+  width: 55%;
+  display: inline-block;
+  vertical-align: top;
+}
+h2 {
+  color: #a45d5d;
 }
