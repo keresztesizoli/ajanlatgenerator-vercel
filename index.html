@@ -45,7 +45,7 @@
 
     <label>Helyszín: <input id="location" type="text" /></label>
     <label>Vendégek száma: <input id="guests" type="number" value="50" /></label>
-    <label>Csomag: 
+    <label>Csomag:
       <select id="package">
         <option value="Alap csomag">Alap csomag</option>
         <option value="Prémium csomag">Prémium csomag</option>
@@ -90,35 +90,67 @@
       const location = document.getElementById("location").value;
       const guests = document.getElementById("guests").value;
       const package = document.getElementById("package").value;
-      const kmPrice = document.getElementById("kmPrice").value;
-      const distance = document.getElementById("distance").value;
       const travelCost = document.getElementById("travelCost").value;
 
       const html = `
-        <div style="
-      padding:2em;
-      border: 1px solid #e0d5d5;
-      border-radius: 10px;
-      background: #fffaf9;
-      font-family: 'Georgia', serif;
-      color: #4b3f3f;
-    ">
-          <img src="logo.png" style="max-width:120px;margin-bottom:1em;" />
-          <div style="text-align:center;margin-bottom:2em;">
-      <h1 style="margin:0;font-size:24px;color:#a45d5d;">Esketési ajánlat</h1>
-      <hr style="margin-top:0.5em;border: none; border-top: 2px dashed #e0bebe;">
-    </div>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Menyasszony:</strong> ${bride}</p>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Vőlegény:</strong> ${groom}</p>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Dátum:</strong> ${date}</p>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Időpont:</strong> ${hour}:${minute}</p>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Helyszín:</strong> ${location}</p>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Vendégek száma:</strong> ${guests}</p>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Csomag:</strong> ${package}</p>
-          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Kiszállási díj:</strong> ${travelCost} Ft</p>
-        </div>
-      `;
-      document.getElementById("pdfTarget").innerHTML = html;
+<div style="
+  padding:2em;
+  border: 1px solid #e0d5d5;
+  border-radius: 10px;
+  background: #fffaf9;
+  font-family: 'Georgia', serif;
+  color: #4b3f3f;
+">
+  <img src="logo.png" style="max-width:120px;margin-bottom:1em;" />
+  <div style="text-align:center;margin-bottom:2em;">
+    <h1 style="margin:0;font-size:24px;color:#a45d5d;">Esketési ajánlat</h1>
+    <hr style="margin-top:0.5em;border: none; border-top: 2px dashed #e0bebe;">
+  </div>
+
+  <p style="font-size:16px;line-height:1.6;"><strong>Kedves ${bride} & ${groom}!</strong><br/>
+  Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz.
+  Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.</p>
+
+  <h3 style="color:#a45d5d;margin-top:1.5em;">Az esküvő részletei:</h3>
+  <ul style="line-height:1.8;">
+    <li><strong>Dátum:</strong> ${date}</li>
+    <li><strong>Időpont:</strong> ${hour}:${minute}</li>
+    <li><strong>Helyszín:</strong> ${location}</li>
+    <li><strong>Vendégek száma:</strong> ${guests} fő</li>
+    <li><strong>Csomag:</strong> ${package}</li>
+    <li><strong>Kiszállási díj:</strong> ${travelCost} Ft</li>
+  </ul>
+
+  <h3 style="color:#a45d5d;margin-top:2em;">Személyre szabott ceremónia</h3>
+  <p style="font-size:15px;line-height:1.7;">
+    Az esküvőtök napja egy életre szóló közös emlék lesz – és minden egyes pillanata rólatok fog szólni.
+    Általam vezetett szertartás mindig teljesen személyre szabott, ezért nincs két egyforma esketés.
+    <br/><br/>
+    Az első egyeztetés során (személyesen vagy online) átbeszéljük az elképzeléseiteket, átnézzük a szerződést és tisztázzuk a részleteket.
+    Ezt követően mindketten írtok nekem egy e-mailt, amiben megosztjátok a megismerkedésetek történetét, fontos momentumokat,
+    és minden olyan információt, ami egy igazán bensőséges szertartáshoz szükséges – beleértve a fogadalmat, közös momentumot vagy szülőköszöntőt is.
+    <br/><br/>
+    A szertartásotok forgatókönyvét, zenei koreográfiáját is közösen alakítjuk ki – úgy, hogy az valóban a ti történeteteket mesélje el.
+    <br/><br/>
+    <strong>Fontos tudnivaló:</strong> Szertartásvezetőként szimbolikus esketést tartok, amelyhez szükséges, hogy az anyakönyvi házasságkötés már korábban megtörténjen,
+    legalább 30 nappal előtte jelezve a házasságkötési szándékot az illetékes hivatalnál.
+    A hivatalos anyakönyvi kivonatot kérlek, küldjétek el e-mailben lefotózva legkésőbb az esküvő előtt 5 nappal
+    (szükség esetén akár az esküvő napján is elfogadom).
+  </p>
+</div>
+`;
+      const result = html
+        .replaceAll("${bride}", bride)
+        .replaceAll("${groom}", groom)
+        .replaceAll("${date}", date)
+        .replaceAll("${hour}", hour)
+        .replaceAll("${minute}", minute)
+        .replaceAll("${location}", location)
+        .replaceAll("${guests}", guests)
+        .replaceAll("${package}", package)
+        .replaceAll("${travelCost}", travelCost);
+
+      document.getElementById("pdfTarget").innerHTML = result;
       document.getElementById("generatePDF").style.display = "inline-block";
     }
 
@@ -126,13 +158,11 @@
       const target = document.getElementById("pdfTarget");
       const canvas = await html2canvas(target);
       const imgData = canvas.toDataURL("image/png");
-
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF();
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
       pdf.save("ajanlat.pdf");
     });
