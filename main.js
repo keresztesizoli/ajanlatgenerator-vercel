@@ -1,17 +1,38 @@
 
-// órák betöltése
-const hourSelect = document.getElementById("startHour");
-for (let i = 0; i <= 23; i++) {
-  const option = document.createElement("option");
-  option.value = option.textContent = i.toString().padStart(2, "0");
-  hourSelect.appendChild(option);
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const hourSelect = document.getElementById("startHour");
+  for (let i = 0; i <= 23; i++) {
+    const option = document.createElement("option");
+    option.value = option.textContent = i.toString().padStart(2, "0");
+    hourSelect.appendChild(option);
+  }
 
-// események
-document.getElementById("distance").addEventListener("input", calculateTravelCost);
-document.getElementById("kmPrice").addEventListener("input", calculateTravelCost);
-document.getElementsByName("isHungary").forEach(r => {
-  r.addEventListener("change", handleLocationType);
+  document.getElementById("distance").addEventListener("input", calculateTravelCost);
+  document.getElementById("kmPrice").addEventListener("input", calculateTravelCost);
+  document.getElementsByName("isHungary").forEach(r => {
+    r.addEventListener("change", handleLocationType);
+  });
+
+  document.getElementById("generatePDF").addEventListener("click", () => {
+    const content = document.getElementById("pdfTarget");
+    if (!content || content.innerHTML.trim() === "") {
+      alert("Előbb készítsd el az előnézetet!");
+      return;
+    }
+    const opt = {
+      margin: 0.5,
+      filename: 'ajanlat.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    setTimeout(() => {
+      html2pdf().set(opt).from(content).save();
+    }, 200);
+  });
+
+  calculateTravelCost();
+  handleLocationType();
 });
 
 function calculateTravelCost() {
@@ -47,7 +68,7 @@ function generatePreview() {
   const customText = document.getElementById("customText").value;
   const costType = document.getElementById("foreignCostType")?.value;
 
-  const logoHTML = '<img src="logo.png" alt="Angel Ceremony logó" style="max-width: 150px; margin-bottom: 1em;" />';
+  const logoHTML = '<img src="logo.png" alt="Angel Ceremony logó" style="max-width: 120px; margin-bottom: 1em;" />';
 
   let costText = isHungary ? `${travelCost} Ft` : (costType === "custom" ? customText : `${travelCost} Ft`);
 
@@ -65,31 +86,11 @@ function generatePreview() {
     </div>
   `;
 
-  document.getElementById("pdfArea").innerHTML = html;
-  document.getElementById("generatePDF").style.display = "inline-block";
+  const target = document.getElementById("pdfTarget");
+  if (target) {
+    target.innerHTML = html;
+    document.getElementById("generatePDF").style.display = "inline-block";
+  } else {
+    alert("Nem található a pdfTarget elem!");
+  }
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("generatePDF").addEventListener("click", () => {
-    const content = document.getElementById("pdfArea");
-    if (!content || content.innerHTML.trim() === "") {
-      alert("Előbb készítsd el az előnézetet!");
-      return;
-    }
-
-    const opt = {
-      margin: 0.5,
-      filename: 'ajanlat.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-
-    setTimeout(() => {
-      html2pdf().set(opt).from(content).save();
-    }, 200);
-  });
-
-  calculateTravelCost();
-  handleLocationType();
-});
