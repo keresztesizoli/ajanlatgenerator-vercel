@@ -1,19 +1,167 @@
 
 <!DOCTYPE html>
-<html><head><meta charset="utf-8"><title>PDF Ajánlat</title></head><body>
-<h1>PDFMake Teszt</h1>
-<button onclick="generatePDF()">PDF generálása</button>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <title>Angel Ceremony Ajánlat – v26</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.68/vfs_fonts.js"></script>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: #f9f4f2;
+      padding: 2em;
+    }
+    label {
+      display: block;
+      margin-top: 1em;
+      font-weight: bold;
+      color: #a45d5d;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.5em;
+      margin-top: 0.3em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 2em;
+      padding: 0.8em 1.5em;
+      font-size: 16px;
+      background: #e7c4cc;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #4b3f3f;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Esketési ajánlat generálása – v26</h1>
+
+  <label>Menyasszony neve:<input id="bride" type="text" /></label>
+  <label>Vőlegény neve:<input id="groom" type="text" /></label>
+  <label>Esküvő dátuma:<input id="date" type="date" /></label>
+  <label>Szertartás kezdete - óra:<input id="hour" type="number" min="0" max="23" /></label>
+  <label>Szertartás kezdete - perc:
+    <select id="minute"><option>00</option><option>15</option><option>30</option><option>45</option></select>
+  </label>
+  <label>Helyszín:<input id="location" type="text" /></label>
+  <label>Helyszín távolsága (km):<input id="distance" type="number" oninput="calculateTravelCost()" /></label>
+  <label>km-díj (Ft/km):<input id="kmRate" type="number" value="150" oninput="calculateTravelCost()" /></label>
+  <label>Vendégek száma:<input id="guests" type="number" /></label>
+  <label>Csomagválasztás:
+    <select id="package">
+      <option>Alapcsomag</option>
+      <option>Prémium csomag</option>
+      <option>Exkluzív csomag</option>
+    </select>
+  </label>
+  <label>Magyarországi helyszín?
+    <select id="isHungarian" onchange="toggleForeignOptions()">
+      <option value="igen">Igen</option>
+      <option value="nem">Nem</option>
+    </select>
+  </label>
+  <div id="foreignOptions" style="display:none;">
+    <label>Mit szerepeltessünk az ajánlatban?
+      <select id="foreignChoice" onchange="toggleCustomTextField()">
+        <option value="dij">Kiszállási díj</option>
+        <option value="szoveg">Egyedi szöveg</option>
+      </select>
+    </label>
+    <label id="customTextLabel" style="display:none;">
+      Egyedi szöveg:
+      <textarea id="customText">repülő + szállás + egyéb költségek, amit a megrendelő fizet</textarea>
+    </label>
+  </div>
+  <label>Kiszállási díj (Ft):<input id="travelCost" type="number" /></label>
+
+  <button onclick="generatePDF()">PDF generálása</button>
+
 <script>
+function calculateTravelCost() {
+  const d = parseFloat(document.getElementById("distance").value);
+  const r = parseFloat(document.getElementById("kmRate").value);
+  if (!isNaN(d) && !isNaN(r)) {
+    const cost = Math.round((2 * d * r) / 1000) * 1000;
+    document.getElementById("travelCost").value = cost;
+  }
+}
+function toggleForeignOptions() {
+  const isHun = document.getElementById("isHungarian").value;
+  document.getElementById("foreignOptions").style.display = (isHun === "nem") ? "block" : "none";
+  toggleCustomTextField();
+}
+function toggleCustomTextField() {
+  const foreignChoice = document.getElementById("foreignChoice").value;
+  document.getElementById("customTextLabel").style.display = (foreignChoice === "szoveg") ? "block" : "none";
+}
+
 function generatePDF() {
+  const bride = document.getElementById("bride").value;
+  const groom = document.getElementById("groom").value;
+  const date = document.getElementById("date").value;
+  const hour = document.getElementById("hour").value;
+  const minute = document.getElementById("minute").value;
+  const location = document.getElementById("location").value;
+  const distance = document.getElementById("distance").value;
+  const rate = document.getElementById("kmRate").value;
+  const guests = document.getElementById("guests").value;
+  const pack = document.getElementById("package").value;
+  const isHungarian = document.getElementById("isHungarian").value;
+  const foreignChoice = document.getElementById("foreignChoice")?.value;
+  const customText = document.getElementById("customText")?.value;
+  const cost = document.getElementById("travelCost").value;
+
+  let kiszallasText = "";
+  if (isHungarian === "igen" || foreignChoice === "dij") {
+    kiszallasText = cost + " Ft";
+  } else {
+    kiszallasText = customText;
+  }
+
   const docDefinition = {
     content: [
-      { text: 'Teszt PDF ajánlat', fontSize: 16 },
-      { text: 'Ez csak egy teszt verzió.', margin: [0, 10] }
+      {
+        text: `Kedves ${bride} & ${groom}!
+
+Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz. Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.`,
+        margin: [0, 0, 0, 20]
+      },
+      {
+        ul: [
+          `Dátum: ${date}`,
+          `Időpont: ${hour}:${minute}`,
+          `Helyszín: ${location}`,
+          `Távolság: ${distance} km`,
+          `Vendégek száma: ${guests}`,
+          `Csomag: ${pack}`,
+          `Kiszállási díj: ${kiszallasText}`
+        ],
+        margin: [0, 0, 0, 20]
+      },
+      {
+        text: `Személyre szabott ceremónia
+
+Az esküvőtök napja egy életre szóló közös emlék lesz – és minden egyes pillanata rólatok fog szólni. Általam vezetett szertartás mindig teljesen személyre szabott, ezért nincs két egyforma esketés.
+
+Az első egyeztetés során (személyesen vagy online) átbeszéljük az elképzeléseiteket, átnézzük a szerződést és tisztázzuk a részleteket. Ezt követően mindketten írtok nekem egy e-mailt, amiben megosztjátok a megismerkedésetek történetét, fontos momentumokat, és minden olyan információt, ami egy igazán bensőséges szertartáshoz szükséges – beleértve a fogadalmat, közös momentumot vagy szülőköszöntőt is.
+
+A szertartásotok forgatókönyvét, zenei koreográfiáját is közösen alakítjuk ki – úgy, hogy az valóban a ti történeteteket mesélje el.
+
+Fontos tudnivaló: Szertartásvezetőként szimbolikus esketést tartok, amelyhez szükséges, hogy az anyakönyvi házasságkötés már korábban megtörténjen, legalább 30 nappal előtte jelezve a házasságkötési szándékot az illetékes hivatalnál.
+
+A hivatalos anyakönyvi kivonatot kérlek, küldjétek el e-mailben lefotózva legkésőbb az esküvő előtt 5 nappal (szükség esetén akár az esküvő napján is elfogadom).`,
+        margin: [0, 0, 0, 20]
+      }
     ]
   };
-  pdfMake.createPdf(docDefinition).download("teszt_ajanlat.pdf");
+
+  pdfMake.createPdf(docDefinition).download("ajanlat.pdf");
 }
 </script>
-</body></html>
+</body>
+</html>
