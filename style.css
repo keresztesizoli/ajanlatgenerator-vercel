@@ -46,3 +46,15 @@ button {
 button:hover {
   background-color: #d4bdb7;
 }
+
+.radio-group {
+  display: flex;
+  gap: 2em;
+  margin-bottom: 1em;
+}
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  font-weight: normal;
+}

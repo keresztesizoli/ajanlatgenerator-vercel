@@ -35,10 +35,13 @@
       <label>Helyszín távolsága (km):
         <input type="number" id="distance" min="0" value="0" />
       </label>
-      <label>Magyarországi helyszín?
-        <input type="radio" name="isHungary" value="igen" checked /> Igen
-        <input type="radio" name="isHungary" value="nem" /> Nem
-      </label>
+      
+    <label>Magyarországi helyszín?</label>
+    <div class="radio-group">
+      <label><input type="radio" name="isHungary" value="igen" checked /> Igen</label>
+      <label><input type="radio" name="isHungary" value="nem" /> Nem</label>
+    </div>
+    
       <label>Vendégek száma:
         <input type="number" id="guests" min="0" value="50" />
       </label>
