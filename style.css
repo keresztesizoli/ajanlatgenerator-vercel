@@ -33,11 +33,13 @@ button {
 .a4 {
   width: 210mm;
   min-height: 297mm;
+  max-width: 100%;
   padding: 20mm;
   background: white;
   color: #4b3f3f;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   overflow: hidden;
+  page-break-after: always;
 }
 .logo {
   width: 120px;
