@@ -1,19 +1,18 @@
 
-window.initAutocomplete = function () {
+function initAutocomplete() {
   console.log("Google Maps API init");
+  const autocomplete = new google.maps.places.Autocomplete(
+    document.getElementById("autocomplete"),
+    { types: ["geocode"] }
+  );
 
-  const autocompleteElement = document.getElementById("autocompleteElement");
-  if (!autocompleteElement) return;
-
-  const autocomplete = new google.maps.places.PlaceAutocompleteElement({ inputElement: autocompleteElement });
-
-  autocomplete.addListener("gmp-placechange", async () => {
+  autocomplete.addListener("place_changed", () => {
     const place = autocomplete.getPlace();
     if (place && place.formatted_address) {
       calculateDistance(place.formatted_address);
     }
   });
-};
+}
 
 async function calculateDistance(destination) {
   const response = await fetch(`/api/distance?destination=${encodeURIComponent(destination)}`);
@@ -27,7 +26,7 @@ async function calculateDistance(destination) {
 }
 
 document.getElementById("kmRate").addEventListener("input", () => {
-  const place = document.getElementById("autocompleteElement").value;
+  const place = document.getElementById("autocomplete").value;
   if (place) calculateDistance(place);
 });
 
