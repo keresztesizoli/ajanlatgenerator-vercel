@@ -51,8 +51,8 @@ function generatePreview() {
 
   let costText = isHungary ? `${travelCost} Ft` : (costType === "custom" ? customText : `${travelCost} Ft`);
 
-  const output = `
-    <div class="pdf-content">
+  const html = `
+    <div style="font-family: sans-serif; padding: 20px;">
       ${logoHTML}
       <h2>Ajánlat</h2>
       <p><strong>${bride}</strong> és <strong>${groom}</strong> részére</p>
@@ -65,17 +65,18 @@ function generatePreview() {
     </div>
   `;
 
-  document.getElementById("output").innerHTML = output;
+  document.getElementById("pdfArea").innerHTML = html;
   document.getElementById("generatePDF").style.display = "inline-block";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("generatePDF").addEventListener("click", () => {
-    const content = document.querySelector(".pdf-content");
-    if (!content) {
+    const content = document.getElementById("pdfArea");
+    if (!content || content.innerHTML.trim() === "") {
       alert("Előbb készítsd el az előnézetet!");
       return;
     }
+
     const opt = {
       margin: 0.5,
       filename: 'ajanlat.pdf',
@@ -83,7 +84,10 @@ document.addEventListener("DOMContentLoaded", () => {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
-    setTimeout(() => { html2pdf().set(opt).from(content).save(); }, 200);
+
+    setTimeout(() => {
+      html2pdf().set(opt).from(content).save();
+    }, 200);
   });
 
   calculateTravelCost();
