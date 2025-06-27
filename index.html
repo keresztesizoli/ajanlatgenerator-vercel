@@ -2,176 +2,140 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <title>Ajánlat PDF generálás</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <title>Esketési ajánlat generálása (A4)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    body { font-family: sans-serif; background: #f9f9f9; padding: 2em; }
-    .container { max-width: 750px; margin: auto; background: white; padding: 2em; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
-    h1 { text-align: center; }
-    label { display: block; margin-bottom: 1em; }
-    input, select, button { width: 100%; padding: 0.5em; margin-top: 0.2em; }
-    #generatePDF { margin-top: 1em; background-color: #e7d1cc; font-weight: bold; }
-    #pdfTarget { margin-top: 2em; padding: 1em; border-top: 1px dashed #ccc; background: white; }
-    .row { display: flex; gap: 1em; }
-    .row > div { flex: 1; }
+    body {
+      font-family: 'Georgia', serif;
+      background: #f9f9f9;
+      padding: 2em;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    h1, h3 {
+      color: #a45d5d;
+    }
+    .bullet-image-row {
+      display: flex;
+      gap: 2em;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .bullet-image-row ul {
+      flex: 1;
+      line-height: 1.8;
+      min-width: 240px;
+      padding-left: 1.2em;
+    }
+    .bullet-image-row img {
+      flex: 1;
+      max-width: 300px;
+      border-radius: 10px;
+      border: 4px solid #e7c4cc;
+    }
+    #preview {
+      margin-top: 2em;
+      padding: 2em;
+      background: #fffaf9;
+      color: #4b3f3f;
+    }
+    button {
+      margin-top: 1em;
+      padding: 0.7em 1.5em;
+      font-size: 16px;
+      font-weight: bold;
+      background: #e7d1cc;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Ajánlatkészítő</h1>
+    <h1>Ajánlatkészítő (A4-es PDF)</h1>
+    <label>Menyasszony neve: <input id="bride" type="text"></label><br>
+    <label>Vőlegény neve: <input id="groom" type="text"></label><br>
+    <label>Dátum: <input id="date" type="date"></label><br>
+    <label>Óra: <input id="hour" type="number" min="0" max="23" value="16"></label>
+    <label>Perc: <select id="minute">
+      <option>00</option><option>15</option><option>30</option><option>45</option>
+    </select></label><br>
+    <label>Helyszín: <input id="location" type="text"></label><br>
+    <label>Vendégek száma: <input id="guests" type="number"></label><br>
+    <label>Csomag: <input id="package" type="text"></label><br>
+    <label>Kiszállási díj (Ft): <input id="travelCost" type="number"></label><br>
 
-    <label>Menyasszony neve: <input id="brideName" type="text" /></label>
-    <label>Vőlegény neve: <input id="groomName" type="text" /></label>
-    <label>Esküvő dátuma: <input id="date" type="date" /></label>
+    <button onclick="generate()">PDF generálása</button>
 
-    <div class="row">
-      <div>
-        <label>Szertartás órája:
-          <select id="hour"></select>
-        </label>
-      </div>
-      <div>
-        <label>Perc:
-          <select id="minute">
-            <option value="00">00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
-          </select>
-        </label>
+    <div id="preview" style="display:none;">
+      <img src="logo.png" style="max-width:120px;margin-bottom:1em;" />
+      <h1>Esketési ajánlat</h1>
+      <p id="greeting"></p>
+      <div id="detailsBlock" class="bullet-image-row"></div>
+      <div id="ceremonyText">
+        <h3>Személyre szabott ceremónia</h3>
+        <p>Az esküvőtök napja egy életre szóló közös emlék lesz – és minden egyes pillanata rólatok fog szólni.
+        Általam vezetett szertartás mindig teljesen személyre szabott, ezért nincs két egyforma esketés.<br><br>
+        Az első egyeztetés során (személyesen vagy online) átbeszéljük az elképzeléseiteket, átnézzük a szerződést és tisztázzuk a részleteket.
+        Ezt követően mindketten írtok nekem egy e-mailt, amiben megosztjátok a megismerkedésetek történetét, fontos momentumokat,
+        és minden olyan információt, ami egy igazán bensőséges szertartáshoz szükséges – beleértve a fogadalmat, közös momentumot vagy szülőköszöntőt is.<br><br>
+        A szertartásotok forgatókönyvét, zenei koreográfiáját is közösen alakítjuk ki – úgy, hogy az valóban a ti történeteteket mesélje el.<br><br>
+        <strong>Fontos tudnivaló:</strong> Szertartásvezetőként szimbolikus esketést tartok, amelyhez szükséges, hogy az anyakönyvi házasságkötés már korábban megtörténjen,
+        legalább 30 nappal előtte jelezve a házasságkötési szándékot az illetékes hivatalnál.
+        A hivatalos anyakönyvi kivonatot kérlek, küldjétek el e-mailben lefotózva legkésőbb az esküvő előtt 5 nappal
+        (szükség esetén akár az esküvő napján is elfogadom).</p>
       </div>
     </div>
-
-    <label>Helyszín: <input id="location" type="text" /></label>
-    <label>Vendégek száma: <input id="guests" type="number" value="50" /></label>
-    <label>Csomag:
-      <select id="package">
-        <option value="Alap csomag">Alap csomag</option>
-        <option value="Prémium csomag">Prémium csomag</option>
-        <option value="Exkluzív csomag">Exkluzív csomag</option>
-      </select>
-    </label>
-    <label>Km-díj (Ft/km): <input id="kmPrice" type="number" value="150" /></label>
-    <label>Helyszín távolsága (km): <input id="distance" type="number" value="0" /></label>
-    <label>Kiszállási díj (automatikus): <input id="travelCost" type="number" disabled /></label>
-
-    <button onclick="generatePreview()">Előnézet</button>
-    <button id="generatePDF" style="display:none;">PDF mentése</button>
-
-    <div id="pdfTarget"></div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
-    for (let i = 0; i <= 23; i++) {
-      const opt = document.createElement("option");
-      opt.value = opt.textContent = i.toString().padStart(2, "0");
-      document.getElementById("hour").appendChild(opt);
-    }
-
-    document.getElementById("distance").addEventListener("input", updateTravelCost);
-    document.getElementById("kmPrice").addEventListener("input", updateTravelCost);
-
-    function updateTravelCost() {
-      const d = parseFloat(document.getElementById("distance").value) || 0;
-      const k = parseFloat(document.getElementById("kmPrice").value) || 0;
-      const result = Math.round(d * 2 * k / 1000) * 1000;
-      document.getElementById("travelCost").value = result;
-    }
-
-    function generatePreview() {
-      const bride = document.getElementById("brideName").value;
-      const groom = document.getElementById("groomName").value;
+    function generate() {
+      const bride = document.getElementById("bride").value;
+      const groom = document.getElementById("groom").value;
       const date = document.getElementById("date").value;
       const hour = document.getElementById("hour").value;
       const minute = document.getElementById("minute").value;
       const location = document.getElementById("location").value;
       const guests = document.getElementById("guests").value;
-      const package = document.getElementById("package").value;
-      const travelCost = document.getElementById("travelCost").value;
+      const pack = document.getElementById("package").value;
+      const cost = document.getElementById("travelCost").value;
 
-      const html = `
-<div style="
-  padding:2em;
-  border: 1px solid #e0d5d5;
-  border-radius: 10px;
-  background: #fffaf9;
-  font-family: 'Georgia', serif;
-  color: #4b3f3f;
-">
-  <img src="logo.png" style="max-width:120px;margin-bottom:1em;" />
-  <div style="text-align:center;margin-bottom:2em;">
-    <h1 style="margin:0;font-size:24px;color:#a45d5d;">Esketési ajánlat</h1>
-    
-  </div>
+      document.getElementById("greeting").innerHTML =
+        `<strong>Kedves ${bride} & ${groom}!</strong><br>Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz. Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.`;
 
-  <p style="font-size:16px;line-height:1.6;"><strong>Kedves ${bride} & ${groom}!</strong><br/>
-  Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz.
-  Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.</p>
+      document.getElementById("detailsBlock").innerHTML = `
+        <ul>
+          <li><strong>Dátum:</strong> ${date}</li>
+          <li><strong>Időpont:</strong> ${hour}:${minute}</li>
+          <li><strong>Helyszín:</strong> ${location}</li>
+          <li><strong>Vendégek száma:</strong> ${guests}</li>
+          <li><strong>Csomag:</strong> ${pack}</li>
+          <li><strong>Kiszállási díj:</strong> ${cost} Ft</li>
+        </ul>
+        <img src="Anita.png" alt="Anita portré">
+      `;
 
-  <h3 style="color:#a45d5d;margin-top:1.5em;">Az esküvő részletei:</h3>
-<div style="display:flex; gap:2em; flex-wrap:wrap; align-items:flex-start;">
-  <ul style="line-height:1.8;">
-    <li><strong>Dátum:</strong> ${date}</li>
-    <li><strong>Időpont:</strong> ${hour}:${minute}</li>
-    <li><strong>Helyszín:</strong> ${location}</li>
-    <li><strong>Vendégek száma:</strong> ${guests} fő</li>
-    <li><strong>Csomag:</strong> ${package}</li>
-    </ul>
-  <div style="flex:1; min-width:240px; display:flex; justify-content:flex-end;">
-    <img src="Anita.png" style="width:100%; max-width:300px; border-radius:10px; border: 4px solid #e7c4cc;" alt="Anita portré" style="width:100%; max-width:300px; border-radius:10px; border: 4px solid #e7c4cc;" />
-  </div>
-</div>
+      const element = document.getElementById("preview");
+      element.style.display = "block";
 
-  <h3 style="color:#a45d5d;margin-top:2em;">Személyre szabott ceremónia</h3>
-  <p style="font-size:15px;line-height:1.7;">
-    Az esküvőtök napja egy életre szóló közös emlék lesz – és minden egyes pillanata rólatok fog szólni.
-    Általam vezetett szertartás mindig teljesen személyre szabott, ezért nincs két egyforma esketés.
-    <br/><br/>
-    Az első egyeztetés során (személyesen vagy online) átbeszéljük az elképzeléseiteket, átnézzük a szerződést és tisztázzuk a részleteket.
-    Ezt követően mindketten írtok nekem egy e-mailt, amiben megosztjátok a megismerkedésetek történetét, fontos momentumokat,
-    és minden olyan információt, ami egy igazán bensőséges szertartáshoz szükséges – beleértve a fogadalmat, közös momentumot vagy szülőköszöntőt is.
-    <br/><br/>
-    A szertartásotok forgatókönyvét, zenei koreográfiáját is közösen alakítjuk ki – úgy, hogy az valóban a ti történeteteket mesélje el.
-    <br/><br/>
-    <strong>Fontos tudnivaló:</strong> Szertartásvezetőként szimbolikus esketést tartok, amelyhez szükséges, hogy az anyakönyvi házasságkötés már korábban megtörténjen,
-    legalább 30 nappal előtte jelezve a házasságkötési szándékot az illetékes hivatalnál.
-    A hivatalos anyakönyvi kivonatot kérlek, küldjétek el e-mailben lefotózva legkésőbb az esküvő előtt 5 nappal
-    (szükség esetén akár az esküvő napján is elfogadom).
-  </p>
-</div>
-`;
-      const result = html
-        .replaceAll("${bride}", bride)
-        .replaceAll("${groom}", groom)
-        .replaceAll("${date}", date)
-        .replaceAll("${hour}", hour)
-        .replaceAll("${minute}", minute)
-        .replaceAll("${location}", location)
-        .replaceAll("${guests}", guests)
-        .replaceAll("${package}", package)
-        .replaceAll("${travelCost}", travelCost);
+      const opt = {
+        margin:       10,
+        filename:     'ajanlat.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
 
-      document.getElementById("pdfTarget").innerHTML = result;
-      document.getElementById("generatePDF").style.display = "inline-block";
+      html2pdf().from(element).set(opt).save();
     }
-
-    document.getElementById("generatePDF").addEventListener("click", async () => {
-      const target = document.getElementById("pdfTarget");
-      const canvas = await html2canvas(target);
-      const imgData = canvas.toDataURL("image/png");
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save("ajanlat.pdf");
-    });
-
-    updateTravelCost();
   </script>
 </body>
 </html>
