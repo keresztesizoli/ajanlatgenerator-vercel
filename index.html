@@ -25,7 +25,7 @@
       font-weight: bold;
       color: #a45d5d;
     }
-    input, select {
+    input, select, textarea {
       width: 100%;
       padding: 0.5em;
       margin-top: 0.3em;
@@ -82,16 +82,19 @@
     <label>Esküvő dátuma:<input id="date" type="date"></label>
     <label>Szertartás kezdete - óra:<input id="hour" type="number" min="0" max="23"></label>
     <label>Szertartás kezdete - perc:
-      <select id="minute">
-        <option>00</option><option>15</option><option>30</option><option>45</option>
-      </select>
+      <select id="minute"><option>00</option><option>15</option><option>30</option><option>45</option></select>
     </label>
     <label>Helyszín:<input id="location" type="text"></label>
-    <label>Vendégek száma:<input id="guests" type="number"></label>
-    <label>Csomagválasztás:<input id="package" type="text"></label>
-    
     <label>Helyszín távolsága (km):<input id="distance" type="number" oninput="calculateTravelCost()"></label>
     <label>km-díj (Ft/km):<input id="kmRate" type="number" value="150" oninput="calculateTravelCost()"></label>
+    <label>Vendégek száma:<input id="guests" type="number"></label>
+    <label>Csomagválasztás:
+      <select id="package">
+        <option>Alapcsomag</option>
+        <option>Prémium csomag</option>
+        <option>Exkluzív csomag</option>
+      </select>
+    </label>
     <label>Magyarországi helyszín?
       <select id="isHungarian" onchange="toggleForeignOptions()">
         <option value="igen">Igen</option>
@@ -100,15 +103,17 @@
     </label>
     <div id="foreignOptions" style="display:none;">
       <label>Mit szerepeltessünk az ajánlatban?
-        <select id="foreignChoice">
+        <select id="foreignChoice" onchange="toggleCustomTextField()">
           <option value="dij">Kiszállási díj</option>
           <option value="szoveg">Egyedi szöveg</option>
         </select>
       </label>
+      <label id="customTextLabel" style="display:none;">
+        Egyedi szöveg:
+        <textarea id="customText">repülő + szállás + egyéb költségek, amit a megrendelő fizet</textarea>
+      </label>
     </div>
     <label>Kiszállási díj (Ft):<input id="travelCost" type="number"></label>
-    
-
     <button onclick="generatePDF()">PDF generálása</button>
 
     <div id="pdfContent">
@@ -134,75 +139,74 @@
     </div>
   </div>
 
-  <script>
-    
-    function calculateTravelCost() {
-      const distance = parseFloat(document.getElementById("distance").value);
-      const rate = parseFloat(document.getElementById("kmRate").value);
-      if (!isNaN(distance) && !isNaN(rate)) {
-        let cost = Math.round(2 * distance * rate / 1000) * 1000;
-        document.getElementById("travelCost").value = cost;
-      }
+<script>
+  function calculateTravelCost() {
+    const distance = parseFloat(document.getElementById("distance").value);
+    const rate = parseFloat(document.getElementById("kmRate").value);
+    if (!isNaN(distance) && !isNaN(rate)) {
+      let cost = Math.round(2 * distance * rate / 1000) * 1000;
+      document.getElementById("travelCost").value = cost;
     }
+  }
 
-    function toggleForeignOptions() {
-      const isHun = document.getElementById("isHungarian").value;
-      const foreignDiv = document.getElementById("foreignOptions");
-      if (isHun === "nem") {
-        foreignDiv.style.display = "block";
-      } else {
-        foreignDiv.style.display = "none";
-      }
-    }
+  function toggleForeignOptions() {
+    const isHun = document.getElementById("isHungarian").value;
+    document.getElementById("foreignOptions").style.display = (isHun === "nem") ? "block" : "none";
+    toggleCustomTextField();
+  }
 
-    function generatePDF() {
-
-      const bride = document.getElementById("bride").value;
-      const groom = document.getElementById("groom").value;
-      const date = document.getElementById("date").value;
-      const hour = document.getElementById("hour").value;
-      const minute = document.getElementById("minute").value;
-      const location = document.getElementById("location").value;
-      const guests = document.getElementById("guests").value;
-      const pack = document.getElementById("package").value;
-      const cost = document.getElementById("travelCost").value;
-
-      document.getElementById("greetingText").innerHTML =
-        `<strong>Kedves ${bride} & ${groom}!</strong><br>Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz. Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.`;
-
-      
-    const isHungarian = document.getElementById("isHungarian").value;
+  function toggleCustomTextField() {
     const foreignChoice = document.getElementById("foreignChoice").value;
-    let kiszallasText = "";
+    document.getElementById("customTextLabel").style.display = (foreignChoice === "szoveg") ? "block" : "none";
+  }
 
+  function generatePDF() {
+    const bride = document.getElementById("bride").value;
+    const groom = document.getElementById("groom").value;
+    const date = document.getElementById("date").value;
+    const hour = document.getElementById("hour").value;
+    const minute = document.getElementById("minute").value;
+    const location = document.getElementById("location").value;
+    const guests = document.getElementById("guests").value;
+    const pack = document.getElementById("package").value;
+    const cost = document.getElementById("travelCost").value;
+    const isHungarian = document.getElementById("isHungarian").value;
+    const foreignChoice = document.getElementById("foreignChoice")?.value;
+    const customText = document.getElementById("customText")?.value;
+
+    document.getElementById("greetingText").innerHTML =
+      `<strong>Kedves ${bride} & ${groom}!</strong><br>Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz. Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.`;
+
+    let kiszallasText = "";
     if (isHungarian === "igen" || foreignChoice === "dij") {
       kiszallasText = cost + " Ft";
     } else {
-      kiszallasText = "repülő + szállás + egyéb költségek, amit a megrendelő fizet";
+      kiszallasText = customText;
     }
 
     document.getElementById("detailsBlock").innerHTML = `
-        <ul>
-          <li><strong>Dátum:</strong> ${date}</li>
-          <li><strong>Időpont:</strong> ${hour}:${minute}</li>
-          <li><strong>Helyszín:</strong> ${location}</li>
-          <li><strong>Vendégek száma:</strong> ${guests}</li>
-          <li><strong>Csomag:</strong> ${pack}</li>
-          <li><strong>Kiszállási díj:</strong> ${kiszallasText}</li>
-        </ul>
-        <img src="Anita.png" alt="Anita portré">
-      `;
+      <ul>
+        <li><strong>Dátum:</strong> ${date}</li>
+        <li><strong>Időpont:</strong> ${hour}:${minute}</li>
+        <li><strong>Helyszín:</strong> ${location}</li>
+        <li><strong>Vendégek száma:</strong> ${guests}</li>
+        <li><strong>Csomag:</strong> ${pack}</li>
+        <li><strong>Kiszállási díj:</strong> ${kiszallasText}</li>
+      </ul>
+      <img src="Anita.png" alt="Anita portré">
+    `;
 
-      document.getElementById("pdfContent").style.display = "block";
+    const clone = document.getElementById("pdfContent").cloneNode(true);
+    clone.style.display = "block";
 
-      html2pdf().from(document.getElementById("pdfContent")).set({
-        margin: 10,
-        filename: 'ajanlat.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      }).save();
-    }
-  </script>
+    html2pdf().from(clone).set({
+      margin: 10,
+      filename: 'ajanlat.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).save();
+  }
+</script>
 </body>
 </html>
