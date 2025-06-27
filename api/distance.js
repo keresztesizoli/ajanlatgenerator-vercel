@@ -1,19 +1,26 @@
 
-export default async function handler(req, res) {
+// Használat esetén a backend oldalon kell lennie
+const axios = require('axios');
+
+module.exports = async (req, res) => {
   const destination = req.query.destination;
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
   const origin = "2040 Budaörs, Szivárvány utca 3";
-  const key = process.env.GOOGLE_MAPS_SERVER_KEY;
 
-  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origin)}&destinations=${encodeURIComponent(destination)}&key=${key}`;
+  try {
+    const response = await axios.get("https://maps.googleapis.com/maps/api/distancematrix/json", {
+      params: {
+        origins: origin,
+        destinations: destination,
+        key: apiKey
+      }
+    });
 
-  const response = await fetch(url);
-  const data = await response.json();
-
-  if (data.status === "OK" && data.rows[0].elements[0].status === "OK") {
-    const meters = data.rows[0].elements[0].distance.value;
-    const kilometers = Math.round(meters / 1000);
-    res.status(200).json({ status: "OK", distance: kilometers });
-  } else {
-    res.status(500).json({ status: "ERROR", message: data.error_message || "Távolság lekérés sikertelen" });
+    const distanceMeters = response.data.rows[0].elements[0].distance.value;
+    const distanceKm = distanceMeters / 1000;
+    res.status(200).json({ distanceKm });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Távolság számítási hiba." });
   }
-}
+};
