@@ -58,3 +58,9 @@ button:hover {
   gap: 0.3em;
   font-weight: normal;
 }
+
+.logo {
+  display: block;
+  max-width: 200px;
+  margin: 0 auto 2em auto;
+}
