@@ -1,96 +1,51 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-  const hourSelect = document.getElementById("startHour");
-  for (let i = 0; i <= 23; i++) {
-    const option = document.createElement("option");
-    option.value = option.textContent = i.toString().padStart(2, "0");
-    hourSelect.appendChild(option);
-  }
-
-  document.getElementById("distance").addEventListener("input", calculateTravelCost);
-  document.getElementById("kmPrice").addEventListener("input", calculateTravelCost);
-  document.getElementsByName("isHungary").forEach(r => {
-    r.addEventListener("change", handleLocationType);
-  });
-
-  document.getElementById("generatePDF").addEventListener("click", () => {
-    const content = document.getElementById("pdfTarget");
-    if (!content || content.innerHTML.trim() === "") {
-      alert("Előbb készítsd el az előnézetet!");
-      return;
-    }
-    const opt = {
-      margin: 0.5,
-      filename: 'ajanlat.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-    };
-    setTimeout(() => {
-      html2pdf().set(opt).from(content).save();
-    }, 200);
-  });
-
-  calculateTravelCost();
-  handleLocationType();
-});
-
-function calculateTravelCost() {
-  const distance = parseFloat(document.getElementById("distance").value) || 0;
-  const kmPrice = parseFloat(document.getElementById("kmPrice").value) || 0;
-  let result = Math.round(distance * 2 * kmPrice / 1000) * 1000;
-  document.getElementById("travelCost").value = result;
-}
-
-function handleLocationType() {
-  const isHungary = document.querySelector('input[name="isHungary"]:checked').value === "igen";
-  document.getElementById("customTextContainer").style.display = isHungary ? "none" : "block";
-}
-
-function formatDate(dateString) {
-  const [year, month, day] = dateString.split("-");
-  return `${year}.${month}.${day}`;
-}
-
-function generatePreview() {
-  const bride = document.getElementById("brideName").value;
-  const groom = document.getElementById("groomName").value;
-  const date = formatDate(document.getElementById("weddingDate").value);
-  const hour = document.getElementById("startHour").value;
-  const minute = document.getElementById("startMinute").value;
+function generatePDF() {
+  const bride = document.getElementById("bride").value;
+  const groom = document.getElementById("groom").value;
+  const date = document.getElementById("date").value;
+  const hour = document.getElementById("hour").value;
+  const minute = document.getElementById("minute").value;
   const location = document.getElementById("location").value;
-  const guests = document.getElementById("guests").value;
-  const package = document.getElementById("package").value;
   const distance = document.getElementById("distance").value;
-  const kmPrice = document.getElementById("kmPrice").value;
-  const travelCost = document.getElementById("travelCost").value;
-  const isHungary = document.querySelector('input[name="isHungary"]:checked').value === "igen";
+  const rate = document.getElementById("kmRate").value;
+  const cost = document.getElementById("travelCost").value;
+  const isHungarian = document.getElementById("isHungarian").value;
   const customText = document.getElementById("customText").value;
-  const costType = document.getElementById("foreignCostType")?.value;
+  const guests = document.getElementById("guests").value;
+  const pack = document.getElementById("package").value;
 
-  const logoHTML = '<img src="logo.png" alt="Angel Ceremony logó" style="max-width: 120px; margin-bottom: 1em;" />';
+  document.getElementById("greeting").innerText = 
+    `Kedves ${bride} & ${groom}!
 
-  let costText = isHungary ? `${travelCost} Ft` : (costType === "custom" ? customText : `${travelCost} Ft`);
+Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz. Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.`;
 
-  const html = `
-    <div style="font-family: sans-serif; padding: 20px;">
-      ${logoHTML}
-      <h2>Ajánlat</h2>
-      <p><strong>${bride}</strong> és <strong>${groom}</strong> részére</p>
-      <p><strong>Dátum:</strong> ${date}</p>
-      <p><strong>Időpont:</strong> ${hour}:${minute}</p>
-      <p><strong>Helyszín:</strong> ${location} (${isHungary ? "Magyarországon" : "külföldön"})</p>
-      <p><strong>Vendégek száma:</strong> ${guests} fő</p>
-      <p><strong>Csomag:</strong> ${package}</p>
-      <p><strong>Kiszállási díj:</strong> ${costText}</p>
-    </div>
+  const kiszallas = isHungarian === "igen" ? `${cost} Ft` : customText;
+
+  const list = `
+    <li>Dátum: ${date}</li>
+    <li>Időpont: ${hour}:${minute}</li>
+    <li>Helyszín: ${location}</li>
+    <li>Távolság: ${distance} km</li>
+    <li>Kiszállási díj: ${kiszallas}</li>
+    <li>Vendégek száma: ${guests}</li>
+    <li>Csomag: ${pack}</li>
   `;
+  document.getElementById("detailsList").innerHTML = list;
 
-  const target = document.getElementById("pdfTarget");
-  if (target) {
-    target.innerHTML = html;
-    document.getElementById("generatePDF").style.display = "inline-block";
-  } else {
-    alert("Nem található a pdfTarget elem!");
-  }
+  const element = document.getElementById("preview");
+  html2pdf().set({
+    margin: 0,
+    filename: 'ajanlat.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'pt', format: 'a4', orientation: 'portrait' }
+  }).from(element).save();
 }
+
+window.onload = function() {
+  const hourSelect = document.getElementById("hour");
+  for (let i = 0; i <= 23; i++) {
+    const val = i < 10 ? "0" + i : i;
+    hourSelect.innerHTML += `<option value="${val}">${val}</option>`;
+  }
+};
