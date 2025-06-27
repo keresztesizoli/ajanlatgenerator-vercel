@@ -1,26 +1,17 @@
-
-// Használat esetén a backend oldalon kell lennie
-const axios = require('axios');
-
-module.exports = async (req, res) => {
-  const destination = req.query.destination;
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+export default async function handler(req, res) {
+  const { destination, rate } = req.query;
   const origin = "2040 Budaörs, Szivárvány utca 3";
+  const apiKey = process.env.GOOGLE_MAPS_SERVER_KEY;
+  const url = `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${encodeURIComponent(origin)}&destinations=${encodeURIComponent(destination)}&key=${apiKey}`;
+  const response = await fetch(url);
+  const data = await response.json();
 
-  try {
-    const response = await axios.get("https://maps.googleapis.com/maps/api/distancematrix/json", {
-      params: {
-        origins: origin,
-        destinations: destination,
-        key: apiKey
-      }
-    });
-
-    const distanceMeters = response.data.rows[0].elements[0].distance.value;
-    const distanceKm = distanceMeters / 1000;
-    res.status(200).json({ distanceKm });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Távolság számítási hiba." });
+  if (data.status !== "OK" || !data.rows[0].elements[0].distance) {
+    return res.status(500).json({ error: "Távolság nem elérhető" });
   }
-};
+
+  const distanceInMeters = data.rows[0].elements[0].distance.value;
+  const distanceInKm = Math.ceil(distanceInMeters / 1000);
+  const fee = Math.ceil(distanceInKm * parseFloat(rate || 150) / 1000) * 1000;
+  return res.status(200).json({ distance: distanceInKm, fee });
+}
