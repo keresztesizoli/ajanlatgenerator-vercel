@@ -3,65 +3,67 @@
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
+  <title>Ajánlat PDF generálás</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ajánlatkészítő PDF</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; padding: 2em; }
+    .container { max-width: 700px; margin: auto; background: white; padding: 2em; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
+    h1 { text-align: center; }
+    label { display: block; margin-bottom: 1em; }
+    input, select, button { width: 100%; padding: 0.5em; margin-top: 0.2em; }
+    #generatePDF { margin-top: 1em; background-color: #e7d1cc; font-weight: bold; }
+    #pdfTarget { margin-top: 2em; padding: 1em; border-top: 1px dashed #ccc; }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Ajánlatkészítő</h1>
 
-    <form id="offerForm">
-      <label>Menyasszony neve: <input type="text" id="brideName" required></label>
-      <label>Vőlegény neve: <input type="text" id="groomName" required></label>
-      <label>Esküvő dátuma: <input type="date" id="weddingDate" required></label>
-      <label>Szertartás kezdete:
-        <select id="startHour"></select> óra
-        <select id="startMinute">
-          <option value="00">00</option>
-          <option value="15">15</option>
-          <option value="30">30</option>
-          <option value="45">45</option>
-        </select> perc
-      </label>
-      <label>Helyszín: <input type="text" id="location" required></label>
-      <label>Helyszín távolsága (km): <input type="number" id="distance" value="0"></label>
-      <label>Magyarországi helyszín?</label>
-      <div class="radio-group">
-        <label><input type="radio" name="isHungary" value="igen" checked> Igen</label>
-        <label><input type="radio" name="isHungary" value="nem"> Nem</label>
-      </div>
-      <label>Vendégek száma: <input type="number" id="guests" value="50"></label>
-      <label>Csomagválasztás:
-        <select id="package">
-          <option value="Alap csomag">Alap csomag</option>
-          <option value="Prémium csomag">Prémium csomag</option>
-          <option value="Exkluzív csomag">Exkluzív csomag</option>
-        </select>
-      </label>
-      <label>Km-díj (Ft/km): <input type="number" id="kmPrice" value="150"></label>
-      <label>Kiszállási díj (Ft): <input type="number" id="travelCost"></label>
-
-      <div id="customTextContainer" style="display:none;">
-        <label>Egyedi szöveg:
-          <input type="text" id="customText" value="repülő + szállás + egyéb költségek, amit a megrendelő fizet">
-        </label>
-        <label>Ajánlatban szereplő szöveg típusa:
-          <select id="foreignCostType">
-            <option value="km">Km-díj alapján</option>
-            <option value="custom">Egyedi szöveg</option>
-          </select>
-        </label>
-      </div>
-
-      <button type="button" onclick="generatePreview()">Előnézet</button>
-      <button type="button" id="generatePDF" style="display:none;">PDF mentése</button>
-    </form>
+    <label>Menyasszony neve: <input id="brideName" type="text" /></label>
+    <label>Vőlegény neve: <input id="groomName" type="text" /></label>
+    <label>Esküvő dátuma: <input id="date" type="date" /></label>
+    <label>Helyszín: <input id="location" type="text" /></label>
+    <button onclick="generatePreview()">Előnézet</button>
+    <button id="generatePDF" style="display:none;">PDF mentése</button>
 
     <div id="pdfTarget"></div>
   </div>
 
-  <script src="main.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    function generatePreview() {
+      const bride = document.getElementById("brideName").value;
+      const groom = document.getElementById("groomName").value;
+      const date = document.getElementById("date").value;
+      const location = document.getElementById("location").value;
+
+      const html = `
+        <div>
+          <img src="logo.png" style="max-width:120px;margin-bottom:1em;" />
+          <h2>Ajánlat</h2>
+          <p><strong>Menyasszony:</strong> ${bride}</p>
+          <p><strong>Vőlegény:</strong> ${groom}</p>
+          <p><strong>Dátum:</strong> ${date}</p>
+          <p><strong>Helyszín:</strong> ${location}</p>
+        </div>
+      `;
+      document.getElementById("pdfTarget").innerHTML = html;
+      document.getElementById("generatePDF").style.display = "inline-block";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("generatePDF").addEventListener("click", () => {
+        const element = document.getElementById("pdfTarget");
+        const opt = {
+          margin: 0.5,
+          filename: 'ajanlat.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+      });
+    });
+  </script>
 </body>
 </html>
