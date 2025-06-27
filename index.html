@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container"><img src="logo.png" alt="Angel Ceremony logó" class="logo" />
+  <div class="container">
+    <img src="logo.png" alt="Angel Ceremony logó" class="logo" />
     <h1>Ajánlatkészítő</h1>
     <form id="offerForm">
       <label>Menyasszony neve:
@@ -35,13 +36,11 @@
       <label>Helyszín távolsága (km):
         <input type="number" id="distance" min="0" value="0" />
       </label>
-      
-    <label>Magyarországi helyszín?</label>
-    <div class="radio-group">
-      <label><input type="radio" name="isHungary" value="igen" checked /> Igen</label>
-      <label><input type="radio" name="isHungary" value="nem" /> Nem</label>
-    </div>
-    
+      <label>Magyarországi helyszín?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="isHungary" value="igen" checked /> Igen</label>
+        <label><input type="radio" name="isHungary" value="nem" /> Nem</label>
+      </div>
       <label>Vendégek száma:
         <input type="number" id="guests" min="0" value="50" />
       </label>
@@ -58,7 +57,6 @@
       <label>Kiszállási díj (Ft):
         <input type="number" id="travelCost" />
       </label>
-
       <div id="customTextContainer" style="display: none;">
         <label>Egyedi szöveg:
           <input type="text" id="customText" value="repülő + szállás + egyéb költségek, amit a megrendelő fizet" />
@@ -75,7 +73,7 @@
       <button type="button" id="generatePDF" style="display:none;">PDF mentése</button>
     </form>
 
-    <div id="output"></div>
+    <div id="output" class="pdf-content"></div>
   </div>
 
   <script src="main.js"></script>
