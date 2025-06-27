@@ -26,10 +26,15 @@ function handleLocationType() {
   document.getElementById("customTextContainer").style.display = isHungary ? "none" : "block";
 }
 
+function formatDate(dateString) {
+  const [year, month, day] = dateString.split("-");
+  return `${year}.${month}.${day}`;
+}
+
 function generatePreview() {
   const bride = document.getElementById("brideName").value;
   const groom = document.getElementById("groomName").value;
-  const date = document.getElementById("weddingDate").value;
+  const date = formatDate(document.getElementById("weddingDate").value);
   const hour = document.getElementById("startHour").value;
   const minute = document.getElementById("startMinute").value;
   const location = document.getElementById("location").value;
@@ -40,35 +45,42 @@ function generatePreview() {
   const travelCost = document.getElementById("travelCost").value;
   const isHungary = document.querySelector('input[name="isHungary"]:checked').value === "igen";
   const customText = document.getElementById("customText").value;
+  const costType = document.getElementById("foreignCostType")?.value;
+
+  let costText = isHungary ? `${travelCost} Ft` : (costType === "custom" ? customText : `${travelCost} Ft`);
 
   const output = `
-    <h3>Előnézet</h3>
+    <h3>Ajánlat előnézet</h3>
     <p><strong>${bride}</strong> és <strong>${groom}</strong> esküvője</p>
     <p>Dátum: ${date}, időpont: ${hour}:${minute}</p>
     <p>Helyszín: ${location} (${isHungary ? "Magyarországon" : "külföldön"})</p>
     <p>Vendégek száma: ${guests}</p>
     <p>Csomag: ${package}</p>
-    <p>Kiszállási díj: ${isHungary ? `${travelCost} Ft` : customText}</p>
+    <p>Kiszállási díj: ${costText}</p>
   `;
 
   document.getElementById("output").innerHTML = output;
+  document.getElementById("generatePDF").style.display = "inline-block";
 }
 
-calculateTravelCost();
-handleLocationType();
+// PDF gomb eseménykezelő
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("generatePDF").addEventListener("click", () => {
+    const outputDiv = document.getElementById("output");
+    if (!outputDiv.innerHTML.trim()) {
+      alert("Előbb készítsd el az előnézetet!");
+      return;
+    }
+    const opt = {
+      margin: 0.5,
+      filename: 'ajanlat.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(outputDiv).save();
+  });
 
-document.getElementById("generatePDF").addEventListener("click", () => {
-  const outputDiv = document.getElementById("output");
-  if (!outputDiv.innerHTML.trim()) {
-    alert("Előbb készítsd el az előnézetet!");
-    return;
-  }
-  const opt = {
-    margin: 0.5,
-    filename: 'ajanlat.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(outputDiv).save();
+  calculateTravelCost();
+  handleLocationType();
 });
