@@ -89,7 +89,25 @@
     <label>Helyszín:<input id="location" type="text"></label>
     <label>Vendégek száma:<input id="guests" type="number"></label>
     <label>Csomagválasztás:<input id="package" type="text"></label>
+    
+    <label>Helyszín távolsága (km):<input id="distance" type="number" oninput="calculateTravelCost()"></label>
+    <label>km-díj (Ft/km):<input id="kmRate" type="number" value="150" oninput="calculateTravelCost()"></label>
+    <label>Magyarországi helyszín?
+      <select id="isHungarian" onchange="toggleForeignOptions()">
+        <option value="igen">Igen</option>
+        <option value="nem">Nem</option>
+      </select>
+    </label>
+    <div id="foreignOptions" style="display:none;">
+      <label>Mit szerepeltessünk az ajánlatban?
+        <select id="foreignChoice">
+          <option value="dij">Kiszállási díj</option>
+          <option value="szoveg">Egyedi szöveg</option>
+        </select>
+      </label>
+    </div>
     <label>Kiszállási díj (Ft):<input id="travelCost" type="number"></label>
+    
 
     <button onclick="generatePDF()">PDF generálása</button>
 
@@ -117,7 +135,28 @@
   </div>
 
   <script>
+    
+    function calculateTravelCost() {
+      const distance = parseFloat(document.getElementById("distance").value);
+      const rate = parseFloat(document.getElementById("kmRate").value);
+      if (!isNaN(distance) && !isNaN(rate)) {
+        let cost = Math.round(2 * distance * rate / 1000) * 1000;
+        document.getElementById("travelCost").value = cost;
+      }
+    }
+
+    function toggleForeignOptions() {
+      const isHun = document.getElementById("isHungarian").value;
+      const foreignDiv = document.getElementById("foreignOptions");
+      if (isHun === "nem") {
+        foreignDiv.style.display = "block";
+      } else {
+        foreignDiv.style.display = "none";
+      }
+    }
+
     function generatePDF() {
+
       const bride = document.getElementById("bride").value;
       const groom = document.getElementById("groom").value;
       const date = document.getElementById("date").value;
@@ -131,14 +170,25 @@
       document.getElementById("greetingText").innerHTML =
         `<strong>Kedves ${bride} & ${groom}!</strong><br>Örömmel küldöm el szertartásvezetői ajánlatomat a magyar nyelvű esküvőtökhöz. Az Angel Ceremony által megálmodott 30 perc varázslat lesz – egy felejthetetlen élmény, ami megalapozza az egész nap ünnepi hangulatát.`;
 
-      document.getElementById("detailsBlock").innerHTML = `
+      
+    const isHungarian = document.getElementById("isHungarian").value;
+    const foreignChoice = document.getElementById("foreignChoice").value;
+    let kiszallasText = "";
+
+    if (isHungarian === "igen" || foreignChoice === "dij") {
+      kiszallasText = cost + " Ft";
+    } else {
+      kiszallasText = "repülő + szállás + egyéb költségek, amit a megrendelő fizet";
+    }
+
+    document.getElementById("detailsBlock").innerHTML = `
         <ul>
           <li><strong>Dátum:</strong> ${date}</li>
           <li><strong>Időpont:</strong> ${hour}:${minute}</li>
           <li><strong>Helyszín:</strong> ${location}</li>
           <li><strong>Vendégek száma:</strong> ${guests}</li>
           <li><strong>Csomag:</strong> ${pack}</li>
-          <li><strong>Kiszállási díj:</strong> ${cost} Ft</li>
+          <li><strong>Kiszállási díj:</strong> ${kiszallasText}</li>
         </ul>
         <img src="Anita.png" alt="Anita portré">
       `;
