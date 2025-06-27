@@ -95,17 +95,27 @@
       const travelCost = document.getElementById("travelCost").value;
 
       const html = `
-        <div style="padding:1em;">
+        <div style="
+      padding:2em;
+      border: 1px solid #e0d5d5;
+      border-radius: 10px;
+      background: #fffaf9;
+      font-family: 'Georgia', serif;
+      color: #4b3f3f;
+    ">
           <img src="logo.png" style="max-width:120px;margin-bottom:1em;" />
-          <h2>Ajánlat</h2>
-          <p><strong>Menyasszony:</strong> ${bride}</p>
-          <p><strong>Vőlegény:</strong> ${groom}</p>
-          <p><strong>Dátum:</strong> ${date}</p>
-          <p><strong>Időpont:</strong> ${hour}:${minute}</p>
-          <p><strong>Helyszín:</strong> ${location}</p>
-          <p><strong>Vendégek száma:</strong> ${guests}</p>
-          <p><strong>Csomag:</strong> ${package}</p>
-          <p><strong>Kiszállási díj:</strong> ${travelCost} Ft</p>
+          <div style="text-align:center;margin-bottom:2em;">
+      <h1 style="margin:0;font-size:24px;color:#a45d5d;">Esketési ajánlat</h1>
+      <hr style="margin-top:0.5em;border: none; border-top: 2px dashed #e0bebe;">
+    </div>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Menyasszony:</strong> ${bride}</p>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Vőlegény:</strong> ${groom}</p>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Dátum:</strong> ${date}</p>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Időpont:</strong> ${hour}:${minute}</p>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Helyszín:</strong> ${location}</p>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Vendégek száma:</strong> ${guests}</p>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Csomag:</strong> ${package}</p>
+          <p style="margin: 0.5em 0;"><strong style="color:#a45d5d;">Kiszállási díj:</strong> ${travelCost} Ft</p>
         </div>
       `;
       document.getElementById("pdfTarget").innerHTML = html;
