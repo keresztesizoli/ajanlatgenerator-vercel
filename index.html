@@ -4,37 +4,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF teszt</title>
+  <title>Ajánlatkészítő PDF</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>PDF generálás teszt</h1>
-    <div id="pdfTarget" style="border:1px solid #ccc; padding:20px; margin-bottom:20px;">
-      <img src="logo.png" style="max-width:100px; display:block; margin-bottom:1em;" />
-      <h2>Ajánlat minta</h2>
-      <p>Menyasszony: Anna</p>
-      <p>Vőlegény: Béla</p>
-      <p>Dátum: 2025.07.01</p>
-      <p>Helyszín: Balaton</p>
-    </div>
+    <h1>Ajánlatkészítő</h1>
 
-    <button onclick="generatePDF()">PDF mentése</button>
+    <form id="offerForm">
+      <label>Menyasszony neve: <input type="text" id="brideName" required></label>
+      <label>Vőlegény neve: <input type="text" id="groomName" required></label>
+      <label>Esküvő dátuma: <input type="date" id="weddingDate" required></label>
+      <label>Szertartás kezdete:
+        <select id="startHour"></select> óra
+        <select id="startMinute">
+          <option value="00">00</option>
+          <option value="15">15</option>
+          <option value="30">30</option>
+          <option value="45">45</option>
+        </select> perc
+      </label>
+      <label>Helyszín: <input type="text" id="location" required></label>
+      <label>Helyszín távolsága (km): <input type="number" id="distance" value="0"></label>
+      <label>Magyarországi helyszín?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="isHungary" value="igen" checked> Igen</label>
+        <label><input type="radio" name="isHungary" value="nem"> Nem</label>
+      </div>
+      <label>Vendégek száma: <input type="number" id="guests" value="50"></label>
+      <label>Csomagválasztás:
+        <select id="package">
+          <option value="Alap csomag">Alap csomag</option>
+          <option value="Prémium csomag">Prémium csomag</option>
+          <option value="Exkluzív csomag">Exkluzív csomag</option>
+        </select>
+      </label>
+      <label>Km-díj (Ft/km): <input type="number" id="kmPrice" value="150"></label>
+      <label>Kiszállási díj (Ft): <input type="number" id="travelCost"></label>
+
+      <div id="customTextContainer" style="display:none;">
+        <label>Egyedi szöveg:
+          <input type="text" id="customText" value="repülő + szállás + egyéb költségek, amit a megrendelő fizet">
+        </label>
+        <label>Ajánlatban szereplő szöveg típusa:
+          <select id="foreignCostType">
+            <option value="km">Km-díj alapján</option>
+            <option value="custom">Egyedi szöveg</option>
+          </select>
+        </label>
+      </div>
+
+      <button type="button" onclick="generatePreview()">Előnézet</button>
+      <button type="button" id="generatePDF" style="display:none;">PDF mentése</button>
+    </form>
+
+    <div id="pdfTarget"></div>
   </div>
 
+  <script src="main.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script>
-    function generatePDF() {
-      const element = document.getElementById('pdfTarget');
-      const opt = {
-        margin: 0.5,
-        filename: 'tesztajanlat.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
-      html2pdf().set(opt).from(element).save();
-    }
-  </script>
 </body>
 </html>
