@@ -55,7 +55,12 @@
         </select>
       </label>
 
-      <label>Helyszín: <input id="autocomplete" placeholder="Kezdd el gépelni a helyszínt..." /></label>
+      <label>Helyszín: 
+<input id="autocompleteElement" placeholder="Esküvő helyszíne" autocomplete="off" />
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBweTu25rtpnUVefi3xTdhpHKf_ywdB4r0&libraries=places&callback=initAutocomplete">
+</script>
+</label>
 
       <label>Magyarországi helyszín?
         <select id="isHungarian">
