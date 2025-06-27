@@ -22,7 +22,28 @@
     <label>Menyasszony neve: <input id="brideName" type="text" /></label>
     <label>Vőlegény neve: <input id="groomName" type="text" /></label>
     <label>Esküvő dátuma: <input id="date" type="date" /></label>
+    <label>Szertartás ideje (óra:perc):
+      <select id="hour"><option value="">--</option></select> :
+      <select id="minute">
+        <option value="00">00</option>
+        <option value="15">15</option>
+        <option value="30">30</option>
+        <option value="45">45</option>
+      </select>
+    </label>
     <label>Helyszín: <input id="location" type="text" /></label>
+    <label>Vendégek száma: <input id="guests" type="number" value="50" /></label>
+    <label>Csomag: 
+      <select id="package">
+        <option value="Alap csomag">Alap csomag</option>
+        <option value="Prémium csomag">Prémium csomag</option>
+        <option value="Exkluzív csomag">Exkluzív csomag</option>
+      </select>
+    </label>
+    <label>Km-díj (Ft/km): <input id="kmPrice" type="number" value="150" /></label>
+    <label>Helyszín távolsága (km): <input id="distance" type="number" value="0" /></label>
+    <label>Kiszállási díj (automatikus): <input id="travelCost" type="number" disabled /></label>
+
     <button onclick="generatePreview()">Előnézet</button>
     <button id="generatePDF" style="display:none;">PDF mentése</button>
 
@@ -31,11 +52,34 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
+    for (let i = 0; i <= 23; i++) {
+      const opt = document.createElement("option");
+      opt.value = opt.textContent = i.toString().padStart(2, "0");
+      document.getElementById("hour").appendChild(opt);
+    }
+
+    document.getElementById("distance").addEventListener("input", updateTravelCost);
+    document.getElementById("kmPrice").addEventListener("input", updateTravelCost);
+
+    function updateTravelCost() {
+      const d = parseFloat(document.getElementById("distance").value) || 0;
+      const k = parseFloat(document.getElementById("kmPrice").value) || 0;
+      const result = Math.round(d * 2 * k / 1000) * 1000;
+      document.getElementById("travelCost").value = result;
+    }
+
     function generatePreview() {
       const bride = document.getElementById("brideName").value;
       const groom = document.getElementById("groomName").value;
       const date = document.getElementById("date").value;
+      const hour = document.getElementById("hour").value;
+      const minute = document.getElementById("minute").value;
       const location = document.getElementById("location").value;
+      const guests = document.getElementById("guests").value;
+      const package = document.getElementById("package").value;
+      const kmPrice = document.getElementById("kmPrice").value;
+      const distance = document.getElementById("distance").value;
+      const travelCost = document.getElementById("travelCost").value;
 
       const html = `
         <div>
@@ -44,26 +88,32 @@
           <p><strong>Menyasszony:</strong> ${bride}</p>
           <p><strong>Vőlegény:</strong> ${groom}</p>
           <p><strong>Dátum:</strong> ${date}</p>
+          <p><strong>Időpont:</strong> ${hour}:${minute}</p>
           <p><strong>Helyszín:</strong> ${location}</p>
+          <p><strong>Vendégek száma:</strong> ${guests}</p>
+          <p><strong>Csomag:</strong> ${package}</p>
+          <p><strong>Kiszállási díj:</strong> ${travelCost} Ft</p>
         </div>
       `;
       document.getElementById("pdfTarget").innerHTML = html;
       document.getElementById("generatePDF").style.display = "inline-block";
     }
 
-    document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("generatePDF").addEventListener("click", () => {
-        const element = document.getElementById("pdfTarget");
-        const opt = {
-          margin: 0.5,
-          filename: 'ajanlat.pdf',
-          image: { type: 'jpeg', quality: 0.98 },
-          html2canvas: { scale: 2 },
-          jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(element).save();
-      });
+    document.getElementById("generatePDF").addEventListener("click", () => {
+      const content = document.getElementById("pdfTarget");
+      const opt = {
+        margin: 0.5,
+        filename: 'ajanlat.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+      setTimeout(() => {
+        html2pdf().set(opt).from(content).save();
+      }, 200);
     });
+
+    updateTravelCost();
   </script>
 </body>
 </html>
