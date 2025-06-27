@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
       html2canvas: { scale: 2 },
       jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
-    html2pdf().set(opt).from(content).save();
+    setTimeout(() => { html2pdf().set(opt).from(content).save(); }, 200);
   });
 
   calculateTravelCost();
