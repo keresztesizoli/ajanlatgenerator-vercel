@@ -1,62 +1,92 @@
-
 <!DOCTYPE html>
 <html lang="hu">
 <head>
   <meta charset="UTF-8" />
-  <title>Esketési Ajánlat – Angel Ceremony</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <title>Angel Ceremony – Ajánlatkérés</title>
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: #fdf7f8;
+      padding: 2em;
+      color: #4b3f3f;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+    }
+    input, select {
+      width: 100%;
+      padding: 0.6em;
+      margin-bottom: 1em;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    label {
+      font-weight: bold;
+    }
+    button {
+      background-color: #e7c4cc;
+      color: #4b3f3f;
+      padding: 0.7em 1.5em;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Esketési ajánlat generálása</h1>
+    <h1>Esketési ajánlat kérés</h1>
     <form id="offerForm">
-      <label>Menyasszony neve: <input type="text" id="bride" /></label>
-      <label>Vőlegény neve: <input type="text" id="groom" /></label>
-      <label>Esküvő dátuma: <input type="date" id="date" /></label>
-      <label>Szertartás kezdete:
-        <select id="hour"></select> :
-        <select id="minute">
-          <option value="00">00</option>
-          <option value="15">15</option>
-          <option value="30">30</option>
-          <option value="45">45</option>
-        </select>
-      </label>
-      <label>Helyszín: <input type="text" id="location" /></label>
-      <label>Helyszín távolsága (km): <input type="number" id="distance" /></label>
-      <label>km-díj (Ft/km): <input type="number" id="kmRate" value="150" /></label>
-      <label>Kiszállási díj (Ft): <input type="number" id="travelCost" /></label>
-      <label>Magyarországi helyszín:
-        <select id="isHungarian">
-          <option value="igen">Igen</option>
-          <option value="nem">Nem</option>
-        </select>
-      </label>
-      <label>Egyedi szöveg (külföldi esetén): <input type="text" id="customText" value="repülő + szállás + egyéb költségek, amit a megrendelő fizet"/></label>
-      <label>Vendégek száma: <input type="number" id="guests" /></label>
-      <label>Csomag: 
-        <select id="package">
-          <option>Alapcsomag</option>
-          <option>Prémium csomag</option>
-          <option>Exkluzív csomag</option>
-        </select>
-      </label>
-      <button type="button" onclick="generatePDF()">PDF letöltése</button>
-    </form>
+      <label for="bride">Menyasszony neve</label>
+      <input type="text" id="bride" required />
 
-    <div id="preview" class="a4">
-      <img src="logo.png" alt="Logo" class="logo" />
-      <h2>Esketési Ajánlat</h2>
-      <p id="greeting"></p>
-      <div class="details">
-        <ul id="detailsList"></ul>
-        <img src="Anita.png" alt="Anita" class="anita" />
-      </div>
-      <h3>Személyre szabott ceremónia</h3>
-      <p>Az esküvőtök napja egy életre szóló közös emlék lesz – és minden egyes pillanata rólatok fog szólni...</p>
-    </div>
+      <label for="groom">Vőlegény neve</label>
+      <input type="text" id="groom" required />
+
+      <label for="date">Esküvő dátuma</label>
+      <input type="date" id="date" required />
+
+      <label for="location">Helyszín</label>
+      <input type="text" id="location" required />
+
+      <label for="package">Csomag</label>
+      <select id="package">
+        <option>Alapcsomag</option>
+        <option>Prémium csomag</option>
+        <option>Exkluzív csomag</option>
+      </select>
+
+      <button type="submit">PDF ajánlat generálása</button>
+    </form>
   </div>
-  <script src="main.js"></script>
+
+  <script>
+    document.getElementById("offerForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const data = {
+        bride: document.getElementById("bride").value,
+        groom: document.getElementById("groom").value,
+        date: document.getElementById("date").value,
+        location: document.getElementById("location").value,
+        package: document.getElementById("package").value
+      };
+
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(data)
+      });
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ajanlat.pdf";
+      a.click();
+    });
+  </script>
 </body>
 </html>
